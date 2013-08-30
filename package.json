@@ -1,0 +1,28 @@
+{
+  "name": "airquality-server",
+  "description": "data server",
+  "author": "Bryan Valentini <bryan@kinisi.cc>",
+  "version": "0.0.1",
+  "private": true,
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/transistorize/kinisi-main.git"
+  },
+  "scripts": {
+    "start": "coffee app.coffee",
+    "test": "mkdir -p dist/src; coffee -o dist/src --compile src; ./node_modules/jasmine-node/bin/jasmine-node --color --coffee spec"
+  },
+  "dependencies": {
+    "config": "0.4.x",
+    "express": "3.3.x",
+    "ejs": "0.8.x",
+    "coffee-script": "1.6.3",
+    "pg": "2.3.1",
+    "getmac": "*",
+    "underscore": "*"
+  },
+  "devDependencies": {
+    "jasmine-node": "1.11.x"
+  },
+  "engine": "node = 0.10.x"
+}

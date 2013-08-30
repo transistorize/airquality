@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="kinisi data platform">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://underscorejs.org/underscore-min.js" charset="uft-8"></script>
+    <script type="text/javascript">
+        
+        function renderResponse(err, response) {
+            if (_.has(response, 'platforms') && _.isArray(response.platforms)) {
+                d3.select('#platforms').selectAll('p')
+                    .data(response.platforms).enter()
+                    .append('p')
+                    .text(function (platform, i) { return i + ') name: ' + platform.name + ', uid: ' + platform.uid; });
+            }
+        }
+
+        function showPlatforms() {
+            d3.json('/eggs', renderResponse);                   
+        }
+
+    </script>
+
+  </head>
+  <body>
+    <form method="POST" enctype="multipart/form-data" action="upload"> 
+      File to upload: 
+      <input type="file" name="datafile" /><br> Notes about the file: 
+      <input type="text" name="note" /><br><br>
+      <input type="radio" name="platform" id="new"> New Egg </input>
+      <input type="radio" name="platform" id="current" onclick="showPlatforms();"> Current Egg </input><br><br>
+      <input type="submit" value="Press" /> to upload the file!
+    </form>
+    <div id="platforms"></div>
+  </body>
+</html>
+
