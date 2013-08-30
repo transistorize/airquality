@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="kinisi data platform">
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <link href="css/btn.css" rel="stylesheet" type="text/css">
+        <style type="text/css">
+            .info {
+                font-family: Verdana, san-serif;
+                font-size: 0.8em;
+                font-weight: bold;
+                color: navy;
+            }
+        </style>
+    </head>
+    <body>
+        <a id="co" href="#" onclick='get("co");' class="btn toplevel">CO</a>
+        <a id="no2" href="#" onclick='get("no2");' class="btn toplevel">N02</a>
+        <a id="voc" href="#" onclick='get("voc");' class="btn toplevel">VOC</a>
+        <a id="temp_degc" href="#" onclick='get("temp_degc");' class="btn toplevel">Temp</a>
+        <a id="humidity" href="#" onclick='get("humidity");' class="btn toplevel">Humidity</a> |
+        <a id="clear" href="#" onclick="clearResults(); return true;" class="btn">Clear</a>
+
+        <hr>
+        <div id="results"></div>
+         
+        <script type="text/javascript">
+            function get(type) {
+                d3.json('/query/col/' + type, function (result) {   
+                    clearResults();
+
+                    d3.select("#" + type).classed('selected', true);
+                    var platforms = d3.select('#results').selectAll('.platform')
+                        .data(result.data).enter()
+                        .append('div')
+                        .classed('platform', true);
+                            
+                    platforms.append('a')
+                        .classed('btn platform_link', true)
+                        .attr('href', function(d) { return '/eggs/uid/' + d.uid; })
+                        .text(function(d, i) { return 'Egg ' + i; });
+
+                        platforms.append('span')
+                        .classed('info', true)
+                        .text(function(d) { return " Returned " + d.values.length + " values"; });
+
+                });
+            }
+
+            function clearResults() {
+                d3.selectAll(".toplevel").classed('selected', false);
+                d3.selectAll(".platform").remove();
+            }
+
+
+        </script>
+</body>
+</html>

@@ -12,7 +12,6 @@ class Routes
     constructor: (app) ->
         @storage = new Storage()
         app.get '/', @welcome
-        app.get '/form', @uploadForm
         app.get '/eggs', @listByPage
         app.get '/eggs/p/:page?*', @listByPage
         app.get '/eggs/uid/:uid', @getByUid
@@ -30,11 +29,6 @@ class Routes
     # '/', processor.welcomeJson
     welcome: (request, response) ->
         response.json msg: 'Welcome to the Cypress Hills Air Quality Project'
-    
-    # '/form', processor.uploadForm
-    uploadForm: (request, response) ->
-        response.set 'Content-Type', 'text/html'
-        response.render 'form.ejs'
 
     # '/upload', processor.postForm
     postForm:  (request, response) ->

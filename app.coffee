@@ -21,7 +21,7 @@ app.configure () ->
     app.use express.compress()
 
     # enable static serving of data
-    app.use express.directory('public')
+    # app.use express.directory('public')
     app.use express.static('public')
 
     # TODO install more robust error handler, for 404s
@@ -32,12 +32,11 @@ app.configure () ->
     app.use express.bodyParser uploadDir: config.WebService.uploadsDir
     
     # non-static routes 
-    app.set 'views', __dirname + '/views'
-    new Routes(app)
+    #new Routes(app)
 
 
 #configurations specific to this config environment
-app.configure 'development', ->
+app.configure 'development', () ->
     console.log 'configure development'
     app.use express.logger('dev')
         
