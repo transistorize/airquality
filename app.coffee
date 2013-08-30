@@ -32,7 +32,7 @@ app.configure () ->
     app.use express.bodyParser uploadDir: config.WebService.uploadsDir
     
     # non-static routes 
-    #new Routes(app)
+    new Routes(app)
 
 
 #configurations specific to this config environment
