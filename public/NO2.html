@@ -102,7 +102,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
             .range([0, chartwidth])
             .domain(egg.dateExtent);
 
-        var y = d3.scale.pow()
+        var y = d3.scale.quantile()
             .range([1, 0])
             .domain(egg.valueExtent);
 
