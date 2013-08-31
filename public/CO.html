@@ -66,13 +66,15 @@ height = 250
 width = 200
 chartheight = 75;
 
+var eggs = [];
+
 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 var x = d3.time.scale()
     .range([0, width]);
 
 var y = d3.scale.linear()
-    .range([75, 0]);
+    .range([chartheight, 0]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -85,8 +87,6 @@ var yAxis = d3.svg.axis()
 var line = d3.svg.line()
     .x(function(d) { return x(d.dates); })
     .y(function(d) { return y(d.COvalues); });
-
-var eggs = [];
 
 function processAndRender (data) {
 
@@ -104,8 +104,8 @@ data.data.map(function(d) {
   });
 console.log(eggs);
 
-  x.domain(d3.extent(eggs, function(d) { return d.dates; }));
-  y.domain(d3.extent(eggs, function(d) { return d.COvalues; }));
+  x.domain(d3.extent(data, function(d) { return d.ts; }));
+  y.domain(d3.extent(data, function(d) { return d.co; }));
 
 
 
@@ -141,16 +141,16 @@ svg.append("text")
 
 //Line chart
 
-var group = svg.append("g")
+svg.append("g")
 	.attr('width', width-5)
   	.attr('height',chartheight);
 
-group.append("g")
+svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + 240 + ")")
       .call(xAxis);
 
-group.append("g")
+svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
     .append("text")
@@ -161,7 +161,7 @@ group.append("g")
       .style("text-anchor", "end")
       .text("ppb");
 
-group.append("path")
+svg.append("path")
       .datum(eggs)
       .attr("class", "line")
       .attr("d", line);
