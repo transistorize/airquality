@@ -61,15 +61,17 @@
 <script>
 
 var radius = 74,
-padding = 10;
+padding = 10
+height = 250
+width = 200;
 
 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 var x = d3.time.scale()
-    .range([0, 150]);
+    .range([0, 800]);
 
 var y = d3.scale.linear()
-    .range([200, 0]);
+    .range([600, 0]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -80,8 +82,8 @@ var yAxis = d3.svg.axis()
     .orient("left");
 
 var line = d3.svg.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.egg10); });
+    .x(function(d) { return x(d.dates); })
+    .y(function(d) { return y(d.COvalues); });
 
 var color = d3.scale.ordinal()
 .range(["#ffa500", "#ff005a", "#00ffa5", "#005aff" ]);
@@ -114,13 +116,13 @@ console.log(eggs);
 
 var svg = d3.select('body').selectAll('svg')
 .data(eggs).enter().append('svg')
-.attr('width', 200)
-.attr('height', 250)
+.attr('width', width)
+.attr('height', height)
 .attr('class', 'pie');
 
 svg.append('rect')
-.attr('width', 200)
-.attr('height', 250)
+.attr('width', width)
+.attr('height', height)
 .attr('fill', 'white')
 .attr('stroke', 'black')
 .attr('stroke-width', 0.5);
@@ -141,9 +143,11 @@ svg.append("text")
 
 //Line chart
 
-var group = d3.select('svg').selectAll('g')
-  .attr('width', 150)
-  .attr('height',50);
+var group = svg.append("g")
+	.attr('width', width-5)
+  	.attr('height',75)
+  	.attr("x", 5)
+  	.attr("y", height-75);
 
 group.append("g")
       .attr("class", "x axis")
