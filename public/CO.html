@@ -221,14 +221,14 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.attr("y", 40)
 			.attr("dy", ".35em")
 			.style("text-anchor", "middle")
-			.text(function(d) { return "Temp: " + round(d.avgTempF, 1); });
+			.text(function(d) { return "Temp: " + Math.round(d.avgTempF, 1); });
 
 		svg.append("text")
 			.attr("x", 180)
 			.attr("y", 60)
 			.attr("dy", ".35em")
 			.style("text-anchor", "middle")
-			.text(function(d) { return "Humidity: " + round(d.avgHumidity,1); });
+			.text(function(d) { return "Humidity: " + Math.round(d.avgHumidity,1); });
 
 		eggs.forEach(function(egg) { renderLineChart(egg); });
 		
