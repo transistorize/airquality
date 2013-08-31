@@ -69,7 +69,7 @@ chartheight = 75;
 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 var x = d3.time.scale()
-    .range([0, 240]);
+    .range([0, width]);
 
 var y = d3.scale.linear()
     .range([height-chartheight, 0]);
@@ -150,7 +150,7 @@ var group = svg.append("g")
 
 group.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + 50 + ")")
+      .attr("transform", "translate(0," + 240 + ")")
       .call(xAxis);
 
 group.append("g")
@@ -159,6 +159,7 @@ group.append("g")
     .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
+      .attr("x",200)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Parts Per Billion (ppb)");
