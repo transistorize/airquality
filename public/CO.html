@@ -10,7 +10,7 @@
     <link href="css/style.css" rel="stylesheet" media="screen">
     <style>
 
-    egg {
+    .pie {
       padding: 10px 0 0 10px;
     }
 
@@ -129,7 +129,7 @@ console.log(eggs);
 //eggs
 
 var svg = d3.select('body').selectAll('svg')
-.data(eggs).enter().append('svg:egg')
+.data(eggs).enter().append('svg')
 .attr('width', width)
 .attr('height', height)
 .attr('class', 'pie');
