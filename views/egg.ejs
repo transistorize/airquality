@@ -287,26 +287,28 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
   d3.selectAll("#total")
       .text(formatNumber(reading.size()));
 
+    var eggWidth = 150,
+    eggHeight = 150;
 
   //eggs
   var egg1 = d3.select('#COegg')  // selects the parent DOM node, once by ID using the # symbol
     .selectAll('svg')             // select all svg children nodes, first time there are none
     .data([avgCO])                // bind the selection above to this data array, must be an array of the single value
     .enter().append('svg')        // when calculating the 'enter' state change, append an svg element for each new data item
-      .attr('width', 150)         // attach these attributes to any new SVG elements created
-      .attr('height', 150)
+      .attr('width', eggWidth)         // attach these attributes to any new SVG elements created
+      .attr('height', eggHeight)
       .attr('class', 'pie');      // returns a special selection array with all the DOM nodes that were just created
 
 egg1.append('ellipse')
-    .attr('cx', 75)
-    .attr('cy', 100)
+    .attr('cx', eggWidth/2)
+    .attr('cy', eggHeight/2)
     .attr('rx', function(d) { return d/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return d/(Math.sqrt(d)*4/5)*2; })
     .style('fill', "#00daff" );
 
 
 egg1.append("text")
-        .attr("x", 75)
+        .attr("x", eggWidth/2)
         .attr("y", 50)
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
@@ -314,21 +316,21 @@ egg1.append("text")
         .text(function(d) { return "Averages"; });
 
     egg1.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "CO: " + Math.round(d, 1); });
 
     egg1.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 90)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Temp: " + Math.round(d.avgTempF, 1); });
 
     egg1.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 110)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
@@ -343,14 +345,14 @@ var egg2 = d3.select('#NO2egg').selectAll('svg')
       .attr('class', 'pie');
 
 egg2.append('ellipse')
-    .attr('cx', 75)
-    .attr('cy', 100)
+    .attr('cx', eggWidth/2)
+    .attr('cy', eggHeight/2)
     .attr('rx', function(d) { return d/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return d/(Math.sqrt(d)*4/5)*2; })
     .style('fill', "#00daff" );
 
 egg2.append("text")
-        .attr("x", 75)
+        .attr("x", eggWidth/2)
         .attr("y", 50)
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
@@ -358,21 +360,21 @@ egg2.append("text")
         .text(function(d) { return "Averages"; });
 
     egg2.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "NO2: " + Math.round(d, 1); });
 
     egg2.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 90)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Temp: " + Math.round(d.avgTempF, 1); });
 
     egg2.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 110)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
@@ -386,14 +388,14 @@ var egg3 = d3.select('#VOCegg').selectAll('svg')
       .attr('class', 'pie');
 
 egg3.append('ellipse')
-    .attr('cx', 75)
-    .attr('cy', 100)
+    .attr('cx', eggWidth/2)
+    .attr('cy', eggHeight/2)
     .attr('rx', function(d) { return Math.abs(d)/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return Math.abs(d)/(Math.sqrt(d)*4/5)*2; })
     .style('fill', "#00daff" );
 
     egg3.append("text")
-        .attr("x", 75)
+        .attr("x", eggWidth/2)
         .attr("y", 50)
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
@@ -401,21 +403,21 @@ egg3.append('ellipse')
         .text(function(d) { return "Averages"; });
 
     egg3.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "VOC: " + Math.round(d, 1); });
 
     egg3.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 90)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Temp: " + Math.round(d.avgTempF, 1); });
 
     egg3.append("text")
-      .attr("x", 75)
+      .attr("x", eggWidth/2)
       .attr("y", 110)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
