@@ -127,7 +127,7 @@ svg.append('ellipse')
 .attr('rx', function(d){return d.avgNO2/Math.sqrt(d.avgNO2)*2;})
 .attr('ry', function(d){return d.avgNO2/(Math.sqrt(d.avgNO2)*4/5)*2;})
 .style('fill', "#00ffa5")
-.on("click", function (d){ console.log(d.egg); var url = "/p/" + d.egg + "/"; window.open(url); });
+.on("click", function (d){ console.log(d.egg); var url = "/p/" + d.egg; window.open(url); });
 // orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
 
 svg.append("text")
