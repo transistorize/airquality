@@ -173,7 +173,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
             // returns a new array with a pointer to the modified data as well means and extents
             return { 'id': d.uid, name: d.name, allData: d.values, 
                 dateExtent: d3.extent(values, date), 
-                valueExtent: d3.extent(values, co)
+                valueExtent: d3.extent(values, co),
                 avgCO: d3.mean(values, co), 
                 avgTempF: meanTempC * 9/5 + 32, 
                 avgTempC: meanTempC, 
