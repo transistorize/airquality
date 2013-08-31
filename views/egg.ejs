@@ -256,7 +256,7 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .dimension(NO2)
         .group(NO2group)
       .x(d3.scale.linear()
-        .domain([4, 320])
+        .domain([0, 500])
         .rangeRound([0, 20* 21])),
 
     barChart()
@@ -272,14 +272,14 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .group(tempgroup)
       .x(d3.scale.linear()
         .domain([18, 40])
-        .rangeRound([0, 20 * 20])),
+        .rangeRound([0, 10 * 20])),
 
     barChart()
         .dimension(humidity)
         .group(humidgroup)
       .x(d3.scale.linear()
         .domain([0, 100])
-        .rangeRound([0, 20 * 25])),
+        .rangeRound([0, 10 * 25])),
 
   ];
 
