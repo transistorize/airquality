@@ -10,8 +10,12 @@
     <link href="css/style.css" rel="stylesheet" media="screen">
     <style>
 
-    svg {
+    .pie {
       padding: 10px 0 0 10px;
+    }
+
+    .linechart {
+      padding: 175px 0 0 5px;
     }
 
     .arc {
@@ -22,6 +26,23 @@
       stroke: #000;
       stroke-width:1;
     }
+
+    .axis path,
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+
+	.x.axis path {
+	  display: none;
+	}
+
+	.line {
+	  fill: none;
+	  stroke: #ffa500;
+	  stroke-width: 1.5px;
+	}
 
     @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js);
 
@@ -62,108 +83,142 @@ One potential source of exposure is fuming nitric acid, which spontaneously prod
 <script>
 
 var radius = 74,
-padding = 10;
-
-var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
-
-var x = d3.time.scale()
-    .range([0, 150]);
-
-var y = d3.scale.linear()
-    .range([200, 0]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
-
-var line = d3.svg.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.egg10); });
+padding = 10
+height = 250
+width = 200
+chartheight = 75
+margin = {top: 5, right: 5, bottom: 30, left: 30};
 
 var eggs = [];
 
-function processAndRender (data) {
-
-data.data.forEach(function(d) {   
-  var id = d.uid;
-  var name = d.name;
-  var values = d.values;
-  var NO2values = d.values.map(function(f){ return f.no2;});
-  var temp = d.values.map(function(f){ return f.temp_degc;});
-  var humidity = d.values.map(function(f){ return f.humidity;});
-  var dates = d.values.map(function(f){ return f.ts;});
-
-  eggs.push({ egg: id, name: name, allData: values, NO2values: NO2values, avgNO2: d3.mean(NO2values), dates: dates, avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
-  
-  });
-console.log(eggs);
-
-  x.domain(d3.extent(data, function(d) { return d.dates; }));
-  y.domain(d3.extent(data, function(d) { return d.NO2values; }));
+var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 
 
-//eggs
+    function renderLineChart (egg) {
 
-var svg = d3.select('body').selectAll('svg')
-.data(eggs).enter().append('svg')
-.attr('width', 150)
-.attr('height', 200)
-.attr('class', 'pie');
+        var x = d3.time.scale()
+            .range([0, width])
+            .domain(egg.dateExtent);
 
-svg.append('rect')
-.attr('width', 150)
-.attr('height', 200)
-.attr('fill', 'white')
-.attr('stroke', 'black')
-.attr('stroke-width', 0.5);
+        var y = d3.scale.linear()
+            .range([chartheight, 0])
+            .domain(egg.valueExtent);
 
-svg.append('ellipse')
-.attr('cx', 75)
-.attr('cy', 100)
-.attr('rx', function(d){return d.avgNO2/Math.sqrt(d.avgNO2)*2;})
-.attr('ry', function(d){return d.avgNO2/(Math.sqrt(d.avgNO2)*4/5)*2;})
-.style('fill', "#00ffa5")
-.on("click", function (d){ console.log(d.egg); var url = "/p/" + d.egg; window.open(url, target="_self"); });
-// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
 
-svg.append("text")
-.attr("x", 30)
-.attr("y", 10)
-.attr("dy", ".35em")
-.style("text-anchor", "middle")
-.text(function(d) { return "egg: " + d.name; });
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left");
 
-//Line chart
+		var line = d3.svg.line()
+            .x(function(d) { 
+                return x(d.ts); 
+            })
+            .y(function(d, i) { 
+                return y(d.no2); 
+            });
 
-var group = d3.select('svg').selectAll('g')
-  .attr('width', 150)
-  .attr('height',50);
+		//Line chart
 
-group.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + 50 + ")")
-      .call(xAxis);
+		var group = d3.select('#egg_' + egg.id).append("g")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", chartheight + margin.top + margin.bottom)
+			.attr("class","linechart")
+			.append("g")
+				.attr("transform", "translate(" + margin.left + ", 165)");
 
-group.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Parts Per Billion (ppb)");
+		group.append("g")
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + chartheight + ")")
+			.call(xAxis);
 
-group.append("path")
-      .datum(eggs)
-      .attr("class", "line")
-      .attr("d", line);
-  }
+		group.append("g")
+			.attr("class", "y axis")
+			.call(yAxis)
+			.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 6)
+			//.attr("x",-150)
+			.attr("dy", ".71em")
+			.style("text-anchor", "end")
+			.text("ppb");
+        
+		group.append("path")
+			.datum(egg.allData)
+			.attr("class", "line")
+			.attr("d", line);
+    }
+
+
+    function processAndRender (response) {
+
+    	eggs = response.data.map(function(d) {   
+            var values = d.values;
+
+            // create accessor functions for mean calculations
+            var no2 = function(f){ return f.no2; };
+    		var temp = function(f){ return f.temp_degc; };
+    		var humidity = function(f){ return f.humidity; };
+    		var date = function(f) { return f.ts; };
+            
+            // change the timestamp in place
+            d.values.forEach(function (e) { e.ts = parseDate(e.ts); });
+
+            // calculate mean temp
+            var meanTempC = d3.mean(values, temp); 
+
+            // returns a new array with a pointer to the modified data as well means and extents
+            return { 'id': d.uid, name: d.name, allData: d.values, 
+                dateExtent: d3.extent(values, date), 
+                valueExtent: d3.extent(values, no2),
+                avgNO2: d3.mean(values, no2), 
+                avgTempF: meanTempC * 9/5 + 32, 
+                avgTempC: meanTempC, 
+                avgHumidity: d3.mean(values, humidity)
+            };
+
+    	});
+        
+    	console.log(eggs);
+
+		//eggs
+
+		var svg = d3.select('body').selectAll('svg')
+			.data(eggs).enter().append('svg')
+			.attr('id', function(d) { return 'egg_' + d.id; })
+			.attr('width', width)
+			.attr('height', height)
+			.attr('class', 'pie');
+
+		svg.append('rect')
+			.attr('width', width)
+			.attr('height', height)
+			.attr('fill', 'white')
+			.attr('stroke', 'black')
+			.attr('stroke-width', 0.5);
+
+		svg.append('ellipse')
+			.attr('cx', 75)
+			.attr('cy', 100)
+			.attr('rx', function(d){return d.avgNO2/Math.sqrt(d.avgNO2)*2;})
+			.attr('ry', function(d){return d.avgNO2/(Math.sqrt(d.avgNO2)*4/5)*2;})
+			.style('fill', "#ffa500")
+			.on("click", function(d){ console.log(d.id); var url = "/p/" + d.id; window.open(url, target="_self"); });
+		// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
+
+		svg.append("text")
+			.attr("x", 50)
+			.attr("y", 10)
+			.attr("dy", ".35em")
+			.style("text-anchor", "middle")
+			.text(function(d) { return "egg: " + d.name; });
+
+		eggs.forEach(function(egg) { renderLineChart(egg); });
+		
+}
 
 d3.json("query/col/no2,temp_degc,humidity", function(data) {
     console.log("load all NO2 data");

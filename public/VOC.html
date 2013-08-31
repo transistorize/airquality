@@ -10,8 +10,12 @@
     <link href="css/style.css" rel="stylesheet" media="screen">
     <style>
 
-    svg {
+    .pie {
       padding: 10px 0 0 10px;
+    }
+
+    .linechart {
+      padding: 175px 0 0 5px;
     }
 
     .arc {
@@ -22,6 +26,23 @@
       stroke: #000;
       stroke-width:1;
     }
+
+    .axis path,
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+
+	.x.axis path {
+	  display: none;
+	}
+
+	.line {
+	  fill: none;
+	  stroke: #ffa500;
+	  stroke-width: 1.5px;
+	}
 
     @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js);
 
@@ -50,123 +71,157 @@
     </div>
     <div class="text-column">
     <p class="title-text">Volatile Organic Compounds (VOC)</p>
-        <br>
+    <br>
      <h3> What is a Volatile Organic Compound? </h3>
     <p>Volatile organic compounds (VOCs) are organic chemicals that have a high vapor pressure at ordinary, room-temperature conditions. Their high vapor pressure results from a low boiling point, which causes large numbers of molecules to evaporate or sublimate from the liquid or solid form of the compound and enter the surrounding air. An example is formaldehyde, with a boiling point of –19 °C (–2 °F), slowly exiting paint and getting into the air.<br>
 <br>
 VOCs are numerous, varied, and ubiquitous. They include both human-made and naturally occurring chemical compounds. Most scents or odours are of VOCs. Some VOCs are dangerous to human health or cause harm to the environment. Anthropogenic VOCs are regulated by law, especially indoors, where concentrations are the highest. Harmful VOCs are typically not acutely toxic, but instead have compounding long-term health effects. Because the concentrations are usually low and the symptoms slow to develop, research into VOCs and their effects is difficult.
   <br><em>Source: <a href="http://en.wikipedia.org/wiki/Volatile_organic_compound">Wikipedia</a></em>
+</p>
 </div>
 
 <script>
 
 var radius = 74,
-padding = 10;
-
-var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
-
-var x = d3.time.scale()
-    .range([0, 150]);
-
-var y = d3.scale.linear()
-    .range([200, 0]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
-
-var line = d3.svg.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.egg10); });
+padding = 10
+height = 250
+width = 200
+chartheight = 75
+margin = {top: 5, right: 5, bottom: 30, left: 30};
 
 var eggs = [];
 
-function processAndRender (data) {
-  
-data.data.map(function(d) {   
-  var id = d.uid;
-  var name = d.name;
-  var values = d.values;
-  var VOCvalues = d.values.map(function(f){ return f.voc;});
-  var temp = d.values.map(function(f){ return f.temp_degc;});
-  var humidity = d.values.map(function(f){ return f.humidity;});
-  var dates = d.values.map(function(f){ return f.ts;});
-
-  eggs.push({ egg: id, name: name, allData: values, VOCvalues: VOCvalues, avgVOC: d3.mean(VOCvalues), dates: dates, avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
-  
-  });
-console.log(eggs);
-
-  x.domain(d3.extent(data, function(d) { return d.dates; }));
-  y.domain(d3.extent(data, function(d) { return d.VOCvalues; }));
+var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 
 
-//eggs
+    function renderLineChart (egg) {
 
-var svg = d3.select('body').selectAll('svg')
-.data(eggs).enter().append('svg')
-.attr('width', 150)
-.attr('height', 200)
-.attr('class', 'pie');
+        var x = d3.time.scale()
+            .range([0, width])
+            .domain(egg.dateExtent);
 
-svg.append('rect')
-.attr('width', 150)
-.attr('height', 200)
-.attr('fill', 'white')
-.attr('stroke', 'black')
-.attr('stroke-width', 0.5);
+        var y = d3.scale.linear()
+            .range([chartheight, 0])
+            .domain(egg.valueExtent);
 
-svg.append('ellipse')
-.attr('cx', 75)
-.attr('cy', 100)
-.attr('rx', function(d){return d.avgVOC/Math.sqrt(d.avgVOC)*2;})
-.attr('ry', function(d){return d.avgVOC/(Math.sqrt(d.avgVOC)*4/5)*2;})
-.style('fill', "#ff005a")
-.on("click", function (d){ console.log(d.egg); var url = "/p/" + d.egg; window.open(url, target="_self"); });
-// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
+
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left");
+
+		var line = d3.svg.line()
+            .x(function(d) { 
+                return x(d.ts); 
+            })
+            .y(function(d, i) { 
+                return y(d.voc); 
+            });
+
+		//Line chart
+
+		var group = d3.select('#egg_' + egg.id).append("g")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", chartheight + margin.top + margin.bottom)
+			.attr("class","linechart")
+			.append("g")
+				.attr("transform", "translate(" + margin.left + ", 165)");
+
+		group.append("g")
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + chartheight + ")")
+			.call(xAxis);
+
+		group.append("g")
+			.attr("class", "y axis")
+			.call(yAxis)
+			.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 6)
+			//.attr("x",-150)
+			.attr("dy", ".71em")
+			.style("text-anchor", "end")
+			.text("ppb");
+        
+		group.append("path")
+			.datum(egg.allData)
+			.attr("class", "line")
+			.attr("d", line);
+    }
 
 
-svg.append("text")
-.attr("x", 30)
-.attr("y", 10)
-.attr("dy", ".35em")
-.style("text-anchor", "middle")
-.text(function(d) { return "egg: " + d.name; });
+    function processAndRender (response) {
 
-//Line chart
+    	eggs = response.data.map(function(d) {   
+            var values = d.values;
 
-var group = d3.select('svg').selectAll('g')
-  .attr('width', 150)
-  .attr('height',50);
+            // create accessor functions for mean calculations
+            var voc = function(f){ return f.voc; };
+    		var temp = function(f){ return f.temp_degc; };
+    		var humidity = function(f){ return f.humidity; };
+    		var date = function(f) { return f.ts; };
+            
+            // change the timestamp in place
+            d.values.forEach(function (e) { e.ts = parseDate(e.ts); });
 
-group.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + 50 + ")")
-      .call(xAxis);
+            // calculate mean temp
+            var meanTempC = d3.mean(values, temp); 
 
-group.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Parts Per Billion (ppb)");
+            // returns a new array with a pointer to the modified data as well means and extents
+            return { 'id': d.uid, name: d.name, allData: d.values, 
+                dateExtent: d3.extent(values, date), 
+                valueExtent: d3.extent(values, voc),
+                avgVOC: d3.mean(values, voc), 
+                avgTempF: meanTempC * 9/5 + 32, 
+                avgTempC: meanTempC, 
+                avgHumidity: d3.mean(values, humidity)
+            };
 
-group.append("path")
-      .datum(eggs)
-      .attr("class", "line")
-      .attr("d", line);
-  }
+    	});
+        
+    	console.log(eggs);
+
+		//eggs
+
+		var svg = d3.select('body').selectAll('svg')
+			.data(eggs).enter().append('svg')
+			.attr('id', function(d) { return 'egg_' + d.id; })
+			.attr('width', width)
+			.attr('height', height)
+			.attr('class', 'pie');
+
+		svg.append('rect')
+			.attr('width', width)
+			.attr('height', height)
+			.attr('fill', 'white')
+			.attr('stroke', 'black')
+			.attr('stroke-width', 0.5);
+
+		svg.append('ellipse')
+			.attr('cx', 75)
+			.attr('cy', 100)
+			.attr('rx', function(d){return d.avgVOC/Math.sqrt(d.avgVOC)*2;})
+			.attr('ry', function(d){return d.avgVOC/(Math.sqrt(d.avgVOC)*4/5)*2;})
+			.style('fill', "#ff005a")
+			.on("click", function(d){ console.log(d.id); var url = "/p/" + d.id; window.open(url, target="_self"); });
+		// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
+
+		svg.append("text")
+			.attr("x", 50)
+			.attr("y", 10)
+			.attr("dy", ".35em")
+			.style("text-anchor", "middle")
+			.text(function(d) { return "egg: " + d.name; });
+
+		eggs.forEach(function(egg) { renderLineChart(egg); });
+		
+}
 
 d3.json("query/col/voc,temp_degc,humidity", function(data) {
-    console.log("load all VOC data");
+    console.log("load all voc data");
     processAndRender(data);
 
 });
