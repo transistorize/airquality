@@ -106,8 +106,8 @@ var yAxis = d3.svg.axis()
     .orient("left");
 
 var line = d3.svg.line()
-    .x(function(d) { return x(d.dates); })
-    .y(function(d) { return y(d.COvalues); });
+    .x(function(d) { return x(d.ts); })
+    .y(function(d) { return y(d.co); });
 
 function processAndRender (data) {
 
@@ -124,7 +124,7 @@ data.data.map(function(d) {
   
   x.domain(d3.extent(data, function(d) { return d.ts; }));
   y.domain(d3.extent(data, function(d) { return d.co; }));
-  
+
   });
 console.log(eggs);
 
