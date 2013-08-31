@@ -122,8 +122,8 @@ data.data.map(function(d) {
 
   eggs.push({ egg: id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
   
-  x.domain(d3.extent(dates, function(g){ return g;}));
-  y.domain(d3.extent(COvalues, function(j){ return j;}));
+  x.domain(d3.extent(data, function(d){ return d.values.ts;}));
+  y.domain(d3.extent(data, function(d){ return d.values.co;}));
 
   });
 console.log(eggs);
