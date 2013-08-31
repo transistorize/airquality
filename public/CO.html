@@ -64,7 +64,8 @@ var radius = 74,
 padding = 10
 height = 250
 width = 200
-chartheight = 75;
+chartheight = 75
+margin = {top: 20, right: 20, bottom: 30, left: 50};
 
 var eggs = [];
 
@@ -141,16 +142,18 @@ svg.append("text")
 
 //Line chart
 
-svg.append("g")
-	.attr('width', width-5)
-  	.attr('height',chartheight);
+var group = d3.select("svg").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", chartheight + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.append("g")
+group.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + 240 + ")")
       .call(xAxis);
 
-svg.append("g")
+group.append("g")
       .attr("class", "y axis")
       .call(yAxis)
     .append("text")
@@ -161,7 +164,7 @@ svg.append("g")
       .style("text-anchor", "end")
       .text("ppb");
 
-svg.append("path")
+group.append("path")
       .datum(eggs)
       .attr("class", "line")
       .attr("d", line);
