@@ -115,12 +115,12 @@ console.log(eggs);
 var svg = d3.select('body').selectAll('svg')
 .data(eggs).enter().append('svg')
 .attr('width', 200)
-.attr('height', 200)
+.attr('height', 250)
 .attr('class', 'pie');
 
 svg.append('rect')
 .attr('width', 200)
-.attr('height', 200)
+.attr('height', 250)
 .attr('fill', 'white')
 .attr('stroke', 'black')
 .attr('stroke-width', 0.5);
