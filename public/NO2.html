@@ -100,7 +100,7 @@ data.data.map(function(d) {
   var humidity = d.values.map(function(f){ return f.humidity;});
   var dates = d.values.map(function(f){ return f.ts;});
 
-  eggs.push({ egg: id, name: name, allData: values, NO2values: NO2values, avgNO2: d3.mean(NO2values), dates: dates, avgTemp: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
+  eggs.push({ egg: id, name: name, allData: values, NO2values: NO2values, avgNO2: d3.mean(NO2values), dates: dates, avgTemp: (d3.mean(temp)*9/5+32), avgHumidity: d3.mean(humidity)  });
   
   });
 console.log(eggs);
@@ -167,7 +167,7 @@ group.append("path")
   }
 
 d3.json("query/col/no2,temp_degc,humidity", function(data) {
-    console.log("load all CO csv");
+    console.log("load all NO2 data");
     processAndRender(data);
 
 });
