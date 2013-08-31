@@ -82,8 +82,8 @@ var yAxis = d3.svg.axis()
     .orient("left");
 
 var line = d3.svg.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.egg10); });
+    .x(function(d) { return x(d.dates); })
+    .y(function(d) { return y(d.COvalues); });
 
 var color = d3.scale.ordinal()
 .range(["#ffa500", "#ff005a", "#00ffa5", "#005aff" ]);
@@ -143,10 +143,10 @@ svg.append("text")
 
 //Line chart
 
-var group = svg.append("rect")
+var group = svg.append("svg:g")
 	.attr('width', 150)
   	.attr('height',50)
-  	.attr("x", 50)
+  	.attr("x", 5)
   	.attr("y", height-50);
 
 group.append("g")
