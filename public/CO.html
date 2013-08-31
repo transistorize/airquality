@@ -73,7 +73,7 @@
     <h3> What is Carbon Monoxide? </h3>
     <p>Carbon monoxide (CO) is a colorless, odorless, and tasteless gas that is slightly less dense than air. It is toxic to humans and animals when encountered in higher concentrations, although it is also produced in normal animal metabolism in low quantities, and is thought to have some normal biological functions. In the atmosphere it is spatially variable, short lived, having a role in the formation of ground-level ozone. Carbon monoxide consists of one carbon atom and one oxygen atom, connected by a triple bond that consists of two covalent bonds as well as one dative covalent bond.<br>
 <br>
-	Carbon monoxide is produced from the partial oxidation of carbon-containing compounds; it forms when there is not enough oxygen to produce carbon dioxide (CO2), such as when operating a stove or an internal combustion engine in an enclosed space. In the presence of oxygen, including atmospheric concentrations, carbon monoxide burns with a blue flame, producing carbon dioxide.[1] Coal gas, which was widely used before the 1960s for domestic lighting, cooking, and heating, had carbon monoxide as a significant fuel constituent. Some processes in modern technology, such as iron smelting, still produce carbon monoxide as a byproduct. 
+	Carbon monoxide is produced from the partial oxidation of carbon-containing compounds; it forms when there is not enough oxygen to produce carbon dioxide (CO2), such as when operating a stove or an internal combustion engine in an enclosed space. In the presence of oxygen, including atmospheric concentrations, carbon monoxide burns with a blue flame, producing carbon dioxide. Coal gas, which was widely used before the 1960s for domestic lighting, cooking, and heating, had carbon monoxide as a significant fuel constituent. Some processes in modern technology, such as iron smelting, still produce carbon monoxide as a byproduct. 
 	<br><em>Source: <a href="http://en.wikipedia.org/wiki/Carbon_monoxide">Wikipedia</a></em>
 </p>
 </div>
@@ -122,8 +122,8 @@ data.data.map(function(d) {
 
   eggs.push({ egg: id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
   
-  x.domain(d3.extent(data, function(d,i){ return d[i].values.ts;}));
-  y.domain(d3.extent(data, function(d,i){ return d[i].values.co;}));
+  x.domain(d3.extent(eggs, function(d){ return d.dates;}));
+  y.domain(d3.extent(eggs, function(d){ return d.COvalues;}));
 
   });
 console.log(eggs);
