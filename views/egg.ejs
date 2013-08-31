@@ -293,7 +293,7 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
     .selectAll('svg')             // select all svg children nodes, first time there are none
     .data([avgCO])                // bind the selection above to this data array, must be an array of the single value
     .enter().append('svg')        // when calculating the 'enter' state change, append an svg element for each new data item
-      .attr('width', 200)         // attach these attributes to any new SVG elements created
+      .attr('width', 150)         // attach these attributes to any new SVG elements created
       .attr('height', 200)
       .attr('class', 'pie');      // returns a special selection array with all the DOM nodes that were just created
 
@@ -306,30 +306,30 @@ egg1.append('ellipse')
 
 
 egg1.append("text")
-        .attr("x", 150)
-        .attr("y", 10)
+        .attr("x", 75)
+        .attr("y", 50)
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
         .style("font-weight", "bold")
         .text(function(d) { return "Averages"; });
 
     egg1.append("text")
-      .attr("x", 150)
-      .attr("y", 30)
+      .attr("x", 75)
+      .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "CO: " + Math.round(d, 1); });
 
     egg1.append("text")
-      .attr("x", 150)
-      .attr("y", 50)
+      .attr("x", 75)
+      .attr("y", 90)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Temp: " + Math.round(d.avgTempF, 1); });
 
     egg1.append("text")
-      .attr("x", 150)
-      .attr("y", 70)
+      .attr("x", 75)
+      .attr("y", 110)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Humidity: " + Math.round(d.avgHumidity,1); });
@@ -338,7 +338,7 @@ egg1.append("text")
 var egg2 = d3.select('#NO2egg').selectAll('svg')
     .data([avgNO2])
     .enter().append('svg')
-      .attr('width', 200)
+      .attr('width', 150)
       .attr('height', 200)
       .attr('class', 'pie');
 
@@ -350,30 +350,30 @@ egg2.append('ellipse')
     .style('fill', "#00daff" );
 
 egg2.append("text")
-        .attr("x", 150)
-        .attr("y", 10)
+        .attr("x", 75)
+        .attr("y", 50)
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
         .style("font-weight", "bold")
         .text(function(d) { return "Averages"; });
 
     egg2.append("text")
-      .attr("x", 150)
-      .attr("y", 30)
+      .attr("x", 75)
+      .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "NO2: " + Math.round(d, 1); });
 
     egg2.append("text")
-      .attr("x", 150)
-      .attr("y", 50)
+      .attr("x", 75)
+      .attr("y", 90)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Temp: " + Math.round(d.avgTempF, 1); });
 
     egg2.append("text")
-      .attr("x", 150)
-      .attr("y", 70)
+      .attr("x", 75)
+      .attr("y", 110)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Humidity: " + Math.round(d.avgHumidity,1); });
@@ -381,7 +381,7 @@ egg2.append("text")
 var egg3 = d3.select('#VOCegg').selectAll('svg')
     .data([avgVOC])
     .enter().append('svg')
-      .attr('width', 200)
+      .attr('width', 150)
       .attr('height', 200)
       .attr('class', 'pie');
 
@@ -393,30 +393,30 @@ egg3.append('ellipse')
     .style('fill', "#00daff" );
 
     egg3.append("text")
-        .attr("x", 150)
-        .attr("y", 10)
+        .attr("x", 75)
+        .attr("y", 50)
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
         .style("font-weight", "bold")
         .text(function(d) { return "Averages"; });
 
     egg3.append("text")
-      .attr("x", 150)
-      .attr("y", 30)
+      .attr("x", 175)
+      .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
-      .text(function(d) { return "NO2: " + Math.round(d, 1); });
+      .text(function(d) { return "VOC: " + Math.round(d, 1); });
 
     egg3.append("text")
-      .attr("x", 150)
-      .attr("y", 50)
+      .attr("x", 75)
+      .attr("y", 90)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Temp: " + Math.round(d.avgTempF, 1); });
 
     egg3.append("text")
-      .attr("x", 150)
-      .attr("y", 70)
+      .attr("x", 75)
+      .attr("y", 110)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "Humidity: " + Math.round(d.avgHumidity,1); });
