@@ -91,105 +91,113 @@ var eggs = [];
 
 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
-var x = d3.time.scale()
-    .range([0, width]);
-
-var y = d3.scale.linear()
-    .range([chartheight, 0]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
-
-var line = d3.svg.line()
-    .x(function(d) { return x(d.ts); })
-    .y(function(d) { return y(d.co); });
-
-function processAndRender (data) {
-
-data.data.map(function(d) {   
-  var id = d.uid;
-  var values = d.values;
-  var name = d.name;
-  var COvalues = d.values.map(function(f){ return f.co;});
-  var temp = d.values.map(function(f){ return f.temp_degc;});
-  var humidity = d.values.map(function(f){ return f.humidity;});
-  var dates = d.values.map(function(f){ return parseDate(f.ts);});
-
-  eggs.push({ egg: id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
-  
-
-  });
-console.log(eggs);
-
-	x.domain(d3.extent(eggs, function(d){ return d.dates;}));
-  	y.domain(d3.extent(eggs, function(d){ return d.COvalues;}));
 
 
-//eggs
+    function renderLineChart (egg) {
 
-var svg = d3.select('body').selectAll('svg')
-.data(eggs).enter().append('svg')
-.attr('width', width)
-.attr('height', height)
-.attr('class', 'pie');
+    	var x = d3.time.scale().range([0, width]);
 
-svg.append('rect')
-.attr('width', width)
-.attr('height', height)
-.attr('fill', 'white')
-.attr('stroke', 'black')
-.attr('stroke-width', 0.5);
+		var y = d3.scale.linear().range([chartheight, 0]);
 
-svg.append('ellipse')
-.attr('cx', 75)
-.attr('cy', 100)
-.attr('rx', function(d){return d.avgCO/Math.sqrt(d.avgCO)*2;})
-.attr('ry', function(d){return d.avgCO/(Math.sqrt(d.avgCO)*4/5)*2;})
-.style('fill', "#ffa500");
-// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
 
-svg.append("text")
-.attr("x", 50)
-.attr("y", 10)
-.attr("dy", ".35em")
-.style("text-anchor", "middle")
-.text(function(d) { return "egg: " + d.name; });
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left");
 
-//Line chart
+		var line = d3.svg.line()
+		    .x(function(d) { return x(d.ts); })
+		    .y(function(d) { return y(d.co); });
 
-var group = d3.select("svg").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", chartheight + margin.top + margin.bottom)
-    .attr("class","linechart")
-  .append("g")
-    .attr("transform", "translate(" + margin.left + ", 165)");
+		//Line chart
 
-group.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + chartheight + ")")
-      .call(xAxis);
+		x.domain(d3.extent(egg, function(d){ return d.dates;}));
+		y.domain(d3.extent(egg, function(d){ return d.COvalues;}));
 
-group.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      //.attr("x",-150)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("ppb");
+		var group = d3.select('#egg_' + egg.uid).append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", chartheight + margin.top + margin.bottom)
+			.attr("class","linechart")
+			.append("g")
+				.attr("transform", "translate(" + margin.left + ", 165)");
 
-group.append("path")
-      .datum(eggs)
-      .attr("class", "line")
-      .attr("d", line);
-  }
+		group.append("g")
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + chartheight + ")")
+			.call(xAxis);
+
+		group.append("g")
+			.attr("class", "y axis")
+			.call(yAxis)
+			.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 6)
+			//.attr("x",-150)
+			.attr("dy", ".71em")
+			.style("text-anchor", "end")
+			.text("ppb");
+
+		group.append("path")
+			.datum(eggs)
+			.attr("class", "line")
+			.attr("d", line);
+    }
+
+
+    function processAndRender (data) {
+
+    	eggs = data.data.map(function(d) {   
+    		var id = d.uid;
+    		var values = d.values;
+    		var name = d.name;
+    		var COvalues = d.values.map(function(f){ return f.co; });
+    		var temp = d.values.map(function(f){ return f.temp_degc; });
+    		var humidity = d.values.map(function(f){ return f.humidity; });
+    		var dates = d.values.map(function(f){ return parseDate(f.ts); });
+
+    		return { egg: id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, 
+    			avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  };
+
+    		});
+
+    	console.log(eggs);
+
+		//eggs
+
+		var svg = d3.select('body').selectAll('svg')
+			.data(eggs).enter().append('svg')
+			.attr('id', function(d) { return 'egg_' + d.uid; })
+			.attr('width', width)
+			.attr('height', height)
+			.attr('class', 'pie');
+
+		svg.append('rect')
+			.attr('width', width)
+			.attr('height', height)
+			.attr('fill', 'white')
+			.attr('stroke', 'black')
+			.attr('stroke-width', 0.5);
+
+		svg.append('ellipse')
+			.attr('cx', 75)
+			.attr('cy', 100)
+			.attr('rx', function(d){return d.avgCO/Math.sqrt(d.avgCO)*2;})
+			.attr('ry', function(d){return d.avgCO/(Math.sqrt(d.avgCO)*4/5)*2;})
+			.style('fill', "#ffa500");
+		// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
+
+		svg.append("text")
+			.attr("x", 50)
+			.attr("y", 10)
+			.attr("dy", ".35em")
+			.style("text-anchor", "middle")
+			.text(function(d) { return "egg: " + d.name; });
+
+		eggs.forEach(function(egg) { renderLineChart(egg); })
+		
+}
 
 d3.json("query/col/co,temp_degc,humidity", function(data) {
     console.log("load all CO data");
