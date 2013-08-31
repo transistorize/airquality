@@ -164,7 +164,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
     		var date = function(f) { return f.ts; };
             
             // change the timestamp in place
-            d.values.forEach(function (e) { e.ts = parseDate(e.ts); });
+            d.values.forEach(function (e) { e.ts = formatDate(e.ts); });
 
             // calculate mean temp
             var meanTempC = d3.mean(values, temp); 
