@@ -96,9 +96,11 @@ data.data.map(function(d) {
   var name = d.name;
   var values = d.values;
   var NO2values = d.values.map(function(f){ return f.no2;});
+  var temp = d.values.map(function(f){ return f.temp_degc;});
+  var humidity = d.values.map(function(f){ return f.humidity;});
   var dates = d.values.map(function(f){ return f.ts;});
 
-  eggs.push({ egg: id, name: name, allData: values, NO2values: NO2values, avg: d3.mean(NO2values), dates: dates  });
+  eggs.push({ egg: id, name: name, allData: values, NO2values: NO2values, avgNO2: d3.mean(NO2values), dates: dates, avgTemp: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
   
   });
 console.log(eggs);
@@ -126,8 +128,8 @@ svg.append('rect')
 svg.append('ellipse')
 .attr('cx', 75)
 .attr('cy', 100)
-.attr('rx', function(d){return d.avg/Math.sqrt(d.avg)*2;})
-.attr('ry', function(d){return d.avg/(Math.sqrt(d.avg)*4/5)*2;})
+.attr('rx', function(d){return d.avgNO2/Math.sqrt(d.avgNO2)*2;})
+.attr('ry', function(d){return d.avgNO2/(Math.sqrt(d.avgNO2)*4/5)*2;})
 .style('fill', "#ffa500");
 
 svg.append("text")
@@ -164,7 +166,7 @@ group.append("path")
       .attr("d", line);
   }
 
-d3.json("query/col/no2", function(data) {
+d3.json("query/col/no2,temp_degc,humidity", function(data) {
     console.log("load all CO csv");
     processAndRender(data);
 

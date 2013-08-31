@@ -95,9 +95,11 @@ data.data.map(function(d) {
   var name = d.name;
   var values = d.values;
   var VOCvalues = d.values.map(function(f){ return f.voc;});
+  var temp = d.values.map(function(f){ return f.temp_degc;});
+  var humidity = d.values.map(function(f){ return f.humidity;});
   var dates = d.values.map(function(f){ return f.ts;});
 
-  eggs.push({ egg: id, name: name, allData: values, VOCvalues: VOCvalues, avg: d3.mean(VOCvalues), dates: dates  });
+  eggs.push({ egg: id, name: name, allData: values, VOCvalues: VOCvalues, avgVOC: d3.mean(VOCvalues), dates: dates, avgTemp: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
   
   });
 console.log(eggs);
@@ -125,8 +127,8 @@ svg.append('rect')
 svg.append('ellipse')
 .attr('cx', 75)
 .attr('cy', 100)
-.attr('rx', function(d){return d.avg/Math.sqrt(d.avg)*2;})
-.attr('ry', function(d){return d.avg/(Math.sqrt(d.avg)*4/5)*2;})
+.attr('rx', function(d){return d.avgVOC/Math.sqrt(d.avgVOC)*2;})
+.attr('ry', function(d){return d.avgVOC/(Math.sqrt(d.avgVOC)*4/5)*2;})
 .style('fill', "#ffa500");
 
 svg.append("text")
@@ -163,7 +165,7 @@ group.append("path")
       .attr("d", line);
   }
 
-d3.json("query/col/voc", function(data) {
+d3.json("query/col/voc,temp_degc,humidity", function(data) {
     console.log("load all CO csv");
     processAndRender(data);
 
