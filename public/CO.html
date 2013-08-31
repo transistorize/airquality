@@ -206,7 +206,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.attr('rx', function(d){return d.avgCO/Math.sqrt(d.avgCO)*2;})
 			.attr('ry', function(d){return d.avgCO/(Math.sqrt(d.avgCO)*4/5)*2;})
 			.style('fill', "#ffa500")
-			.on("click", function (d){ console.log(d.egg); var url = "/p/" + d.egg; window.open(url, target="_self"); });
+			.on("click", function (d){ console.log(d.id); var url = "/p/" + d.egg; window.open(url, target="_self"); });
 		// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
 
 		svg.append("text")
