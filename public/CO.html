@@ -10,7 +10,7 @@
     <link href="css/style.css" rel="stylesheet" media="screen">
     <style>
 
-    svg {
+    egg {
       padding: 10px 0 0 10px;
     }
 
@@ -21,6 +21,22 @@
     .svg:not(:hover) .nodetext{
       display: none;
     }
+    .axis path,
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+
+	.x.axis path {
+	  display: none;
+	}
+
+	.line {
+	  fill: none;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
 
     @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js);
 
@@ -113,7 +129,7 @@ console.log(eggs);
 //eggs
 
 var svg = d3.select('body').selectAll('svg')
-.data(eggs).enter().append('svg')
+.data(eggs).enter().append('svg:egg')
 .attr('width', width)
 .attr('height', height)
 .attr('class', 'pie');
