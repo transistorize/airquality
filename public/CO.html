@@ -68,10 +68,10 @@ width = 200;
 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 var x = d3.time.scale()
-    .range([0, width]);
+    .range([0, 800]);
 
 var y = d3.scale.linear()
-    .range([height/4, height]);
+    .range([600, 0]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -82,8 +82,8 @@ var yAxis = d3.svg.axis()
     .orient("left");
 
 var line = d3.svg.line()
-    .x(function(d) { return x(d.dates); })
-    .y(function(d) { return y(d.COvalues); });
+    .x(function(d, i) { return x(d.dates); })
+    .y(function(d, i) { return y(d.COvalues); });
 
 var color = d3.scale.ordinal()
 .range(["#ffa500", "#ff005a", "#00ffa5", "#005aff" ]);
@@ -144,10 +144,10 @@ svg.append("text")
 //Line chart
 
 var group = svg.append("svg:rect")
-	.attr('width', 150)
-  	.attr('height',50)
+	.attr('width', width-5)
+  	.attr('height',75)
   	.attr("x", 5)
-  	.attr("y", 200)
+  	.attr("y", height-50)
   	.attr('fill-opacity', 0);
 
 group.append("g")
