@@ -82,14 +82,10 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.egg10); });
 
-var color = d3.scale.ordinal()
-.range(["#ffa500", "#ff005a", "#00ffa5", "#005aff" ]);
-
 var eggs = [];
 
 function processAndRender (data) {
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "egg"; }));
-
+  
 data.data.map(function(d) {   
   var id = d.uid;
   var name = d.name;
@@ -129,7 +125,9 @@ svg.append('ellipse')
 .attr('cy', 100)
 .attr('rx', function(d){return d.avgVOC/Math.sqrt(d.avgVOC)*2;})
 .attr('ry', function(d){return d.avgVOC/(Math.sqrt(d.avgVOC)*4/5)*2;})
-.style('fill', "#ffa500");
+.style('fill', "#ff005a");
+// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
+
 
 svg.append("text")
 .attr("x", 30)
