@@ -14,8 +14,8 @@
 
 .chart {
   display: inline-block;
-  height: 151px;
-  margin-bottom: 20px;
+  height: 200px;
+  margin-bottom: 10px;
 }
 
 .reset {
@@ -52,20 +52,13 @@
   stroke: #666;
 }
 
-#hour-chart {
-  width: 400px;
+#COegg, #NO2egg, #VOCegg{
+  display: inline-block;
+  width:200px;
 }
 
-#delay-chart {
-  width: 400px;
-}
-
-#distance-chart {
-  width: 400px;
-}
-
-#date-chart {
-  width: 400px;
+#hour-chart, #delay-chart, #distance-chart, #date-chart {
+  width: 600px;
 }
 
 #reading-list {
@@ -257,14 +250,14 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .group(COgroup)
       .x(d3.scale.linear()
         .domain([400, 1000])
-        .rangeRound([0, 10 * 21])),
+        .rangeRound([0, 20 * 21])),
 
     barChart()
         .dimension(NO2)
         .group(NO2group)
       .x(d3.scale.linear()
-        .domain([4, 280])
-        .rangeRound([0, 10 * 21])),
+        .domain([4, 320])
+        .rangeRound([0, 20* 21])),
 
     barChart()
         .dimension(VOC)
@@ -272,21 +265,21 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .round(d3.time.day.round)
       .x(d3.scale.linear()
         .domain([500,700])
-        .rangeRound([0, 10 * 50])),
+        .rangeRound([0, 20 * 20])),
 
     barChart()
         .dimension(temperature)
         .group(tempgroup)
       .x(d3.scale.linear()
-        .domain([18, 30])
-        .rangeRound([0, 10 * 20])),
+        .domain([18, 40])
+        .rangeRound([0, 20 * 20])),
 
     barChart()
         .dimension(humidity)
         .group(humidgroup)
       .x(d3.scale.linear()
         .domain([0, 100])
-        .rangeRound([0, 10 * 25])),
+        .rangeRound([0, 20 * 25])),
 
   ];
 
