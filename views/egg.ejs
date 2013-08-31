@@ -194,6 +194,8 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
       formatDate = d3.time.format.utc("%Y-%m-%dT"),
       formatTime = d3.time.format.utc("%H:%M:%SZ");
 
+  var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
+
   // A nest operator, for grouping the reading list.
   var nestByDate = d3.nest()
       .key(function(d) { return d3.time.day(d.date); });
@@ -310,7 +312,7 @@ egg1.append('ellipse')
     .attr('cy', 100)
     .attr('rx', function(d) { return d/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return d/(Math.sqrt(d)*4/5)*2; })
-    .style('fill', "grey" );
+    .style('fill', "#00daff" );
 
 var egg2 = d3.select('#NO2egg').selectAll('svg')
     .data([avgNO2])
@@ -324,7 +326,7 @@ egg2.append('ellipse')
     .attr('cy', 100)
     .attr('rx', function(d) { return d/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return d/(Math.sqrt(d)*4/5)*2; })
-    .style('fill', "grey" );
+    .style('fill', "#00daff" );
 
 var egg3 = d3.select('#VOCegg').selectAll('svg')
     .data([avgVOC])
@@ -338,7 +340,7 @@ egg3.append('ellipse')
     .attr('cy', 100)
     .attr('rx', function(d) { return Math.abs(d)/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return Math.abs(d)/(Math.sqrt(d)*4/5)*2; })
-    .style('fill', "grey" );
+    .style('fill', "#00daff" );
 
 renderAll();
 
@@ -382,7 +384,7 @@ renderAll();
           .attr("class", "date")
         .append("div")
           .attr("class", "day")
-          .text(function(d) { return formatDate(d.values[0].date); });
+          .text(function(d) { return parseDate(d.values[0].date); });
 
       date.exit().remove();
 
