@@ -37,7 +37,7 @@
               <li class="active"><a href="index.html">Egg Sitting</a></li>
               <li><a href="index.html#map">All Eggs</a></li>
               <li><a href="CO.html">Carbon Monoxide (C0)</a></li>
-              <li><a href="NO2.html">Nitrous Dioxide (NO2)</a></li>
+              <li><a href="VOC.html">Nitrous Dioxide (NO2)</a></li>
               <li><a href="VOC.html">Volatile Organic Compounds (VOC)</a></li>
               <li><a href="index.html#team">Add An Egg</a></li>
             </ul>
@@ -85,18 +85,18 @@ function processAndRender (data) {
 
 data.data.map(function(d) {   
   var id = d.uid;
-  var values = d.values;
   var name = d.name;
-  var COvalues = d.values.map(function(f){ return f.co;});
+  var values = d.values;
+  var VOCvalues = d.values.map(function(f){ return f.voc;});
   var dates = d.values.map(function(f){ return f.ts;});
 
-  eggs.push({ egg: id, name: name, allData: values, COvalues: COvalues, avg: d3.mean(COvalues), dates: dates  });
+  eggs.push({ egg: id, name: name, allData: values, VOCvalues: VOCvalues, avg: d3.mean(VOCvalues), dates: dates  });
   
   });
 console.log(eggs);
 
   x.domain(d3.extent(data, function(d) { return d.dates; }));
-  y.domain(d3.extent(data, function(d) { return d.COvalues; }));
+  y.domain(d3.extent(data, function(d) { return d.VOCvalues; }));
 
 
 
@@ -156,7 +156,7 @@ group.append("path")
       .attr("d", line);
   }
 
-d3.json("query/col/co", function(data) {
+d3.json("query/col/voc", function(data) {
     console.log("load all CO csv");
     processAndRender(data);
 

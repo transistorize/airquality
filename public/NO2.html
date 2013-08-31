@@ -85,18 +85,18 @@ function processAndRender (data) {
 
 data.data.map(function(d) {   
   var id = d.uid;
-  var values = d.values;
   var name = d.name;
-  var COvalues = d.values.map(function(f){ return f.co;});
+  var values = d.values;
+  var NO2values = d.values.map(function(f){ return f.no2;});
   var dates = d.values.map(function(f){ return f.ts;});
 
-  eggs.push({ egg: id, name: name, allData: values, COvalues: COvalues, avg: d3.mean(COvalues), dates: dates  });
+  eggs.push({ egg: id, name: name, allData: values, NO2values: NO2values, avg: d3.mean(NO2values), dates: dates  });
   
   });
 console.log(eggs);
 
   x.domain(d3.extent(data, function(d) { return d.dates; }));
-  y.domain(d3.extent(data, function(d) { return d.COvalues; }));
+  y.domain(d3.extent(data, function(d) { return d.NO2values; }));
 
 
 
@@ -156,7 +156,7 @@ group.append("path")
       .attr("d", line);
   }
 
-d3.json("query/col/co", function(data) {
+d3.json("query/col/no2", function(data) {
     console.log("load all CO csv");
     processAndRender(data);
 
