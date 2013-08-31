@@ -22,9 +22,11 @@
       stroke: #fff;
     }
 
-    .svg:not(:hover) .nodetext{
-      display: none;
+    ellipse:hover {
+      stroke: #000;
+      stroke-width:1;
     }
+
     .axis path,
 	.axis line {
 	  fill: none;
@@ -185,7 +187,8 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.attr('cy', 100)
 			.attr('rx', function(d){return d.avgCO/Math.sqrt(d.avgCO)*2;})
 			.attr('ry', function(d){return d.avgCO/(Math.sqrt(d.avgCO)*4/5)*2;})
-			.style('fill', "#ffa500");
+			.style('fill', "#ffa500")
+			.on("click", function (d){ console.log(d.egg); var url = "/p/" + d.egg; window.open(url, target="_self"); });
 		// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
 
 		svg.append("text")
