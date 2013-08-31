@@ -116,7 +116,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 		x.domain(d3.extent(egg, function(d){ return d.dates;}));
 		y.domain(d3.extent(egg, function(d){ return d.COvalues;}));
 
-		var group = d3.select('#egg_' + egg.uid).append("svg")
+		var group = d3.select('#egg_' + egg.id).append("svg")
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", chartheight + margin.top + margin.bottom)
 			.attr("class","linechart")
@@ -157,10 +157,10 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
     		var humidity = d.values.map(function(f){ return f.humidity; });
     		var dates = d.values.map(function(f){ return parseDate(f.ts); });
 
-    		return { egg: id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, 
+    		return { 'id': id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, 
     			avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  };
 
-    		});
+    	});
 
     	console.log(eggs);
 
@@ -168,7 +168,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 		var svg = d3.select('body').selectAll('svg')
 			.data(eggs).enter().append('svg')
-			.attr('id', function(d) { return 'egg_' + d.uid; })
+			.attr('id', function(d) { return 'egg_' + d.id; })
 			.attr('width', width)
 			.attr('height', height)
 			.attr('class', 'pie');
