@@ -82,8 +82,8 @@ var yAxis = d3.svg.axis()
     .orient("left");
 
 var line = d3.svg.line()
-    .x(function(d, i) { return x(d.dates); })
-    .y(function(d, i) { return y(d.COvalues); });
+    .x(function(d) { return x(d.dates); })
+    .y(function(d) { return y(d.COvalues); });
 
 var color = d3.scale.ordinal()
 .range(["#ffa500", "#ff005a", "#00ffa5", "#005aff" ]);
@@ -148,7 +148,7 @@ var group = svg.append("svg:rect")
   	.attr('height',75)
   	.attr("x", 5)
   	.attr("y", height-50)
-  	.attr('fill-opacity', 0);
+  	.attr('fill', 'white');
 
 group.append("g")
       .attr("class", "x axis")
