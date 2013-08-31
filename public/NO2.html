@@ -99,11 +99,11 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
     function renderLineChart (egg) {
 
         var x = d3.time.scale()
-            .range([0, width])
+            .range([0, chartwidth])
             .domain(egg.dateExtent);
 
         var y = d3.scale.linear()
-            .range([chartheight/1000, 0])
+            .range([chartheight/100, 0])
             .domain(egg.valueExtent);
 
 		var xAxis = d3.svg.axis()
