@@ -122,12 +122,12 @@ data.data.map(function(d) {
 
   eggs.push({ egg: id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
   
-  x.domain(d3.extent(eggs, function(d){ return d.dates;}));
-  y.domain(d3.extent(eggs, function(d){ return d.COvalues;}));
 
   });
 console.log(eggs);
 
+	x.domain(d3.extent(eggs, function(d){ return d.dates;}));
+  	y.domain(d3.extent(eggs, function(d){ return d.COvalues;}));
 
 
 //eggs
