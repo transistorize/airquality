@@ -261,7 +261,7 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .group(VOCgroup)
         .round(d3.time.day.round)
       .x(d3.scale.linear()
-        .domain([550,900])
+        .domain([525,850])
         .rangeRound([0, 20 * 21])),
 
     barChart()
