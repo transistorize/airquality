@@ -232,8 +232,15 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
   });
   var avgVOC = d3.mean(allVOC);
 
-  var avgTempF = d3.mean(temperature)* 9/5 + 32;
-  var avgHumidity = d3.mean(humidity); 
+  var allTemp = egg.map(function(d){
+    return d.temperature;
+  });
+  var avgTempF = d3.mean(allTemp)* 9/5 + 32;
+
+  var allHumid = egg.map(function(d){
+    return d.humidity;
+  });
+  var avgHumidity = d3.mean(allHumid); 
 
 //charts
   var charts = [
