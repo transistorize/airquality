@@ -250,14 +250,14 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .group(COgroup)
       .x(d3.scale.linear()
         .domain([400, 1000])
-        .rangeRound([0, 5 * 21])),
+        .rangeRound([0, 20 * 21])),
 
     barChart()
         .dimension(NO2)
         .group(NO2group)
       .x(d3.scale.linear()
         .domain([4, 280])
-        .rangeRound([0, 5 * 21])),
+        .rangeRound([0, 20* 21])),
 
     barChart()
         .dimension(VOC)
@@ -265,21 +265,21 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .round(d3.time.day.round)
       .x(d3.scale.linear()
         .domain([500,700])
-        .rangeRound([0, 5 * 50])),
+        .rangeRound([0, 20 * 50])),
 
     barChart()
         .dimension(temperature)
         .group(tempgroup)
       .x(d3.scale.linear()
         .domain([18, 30])
-        .rangeRound([0, 5 * 20])),
+        .rangeRound([0, 20 * 20])),
 
     barChart()
         .dimension(humidity)
         .group(humidgroup)
       .x(d3.scale.linear()
         .domain([0, 100])
-        .rangeRound([0, 5 * 25])),
+        .rangeRound([0, 20 * 25])),
 
   ];
 
