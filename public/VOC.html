@@ -86,8 +86,9 @@ var radius = 74,
 padding = 10,
 height = 250,
 width = 250,
-chartheight = 75,
-margin = {top: 5, right: 5, bottom: 30, left: 30};
+margin = {top: 10, right: 15, bottom:10, left: 30},
+chartwidth = width - margin.left - margin.right,
+chartheight = 75 - margin.top - margin.bottom;
 
 var eggs = [];
 
@@ -107,10 +108,12 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 		var xAxis = d3.svg.axis()
 		    .scale(x)
+        .ticks(6)
 		    .orient("bottom");
 
 		var yAxis = d3.svg.axis()
 		    .scale(y)
+        .ticks(5)
 		    .orient("left");
 
 		var line = d3.svg.line()
@@ -124,11 +127,11 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 		//Line chart
 
 		var group = d3.select('#egg_' + egg.id).append("g")
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", chartheight + margin.top + margin.bottom)
+			.attr("width", chartwidth + margin.left + margin.right)
+      .attr("height", chartheight + margin.top + margin.bottom)
 			.attr("class","linechart")
 			.append("g")
-				.attr("transform", "translate(" + margin.left + ", 165)");
+				.attr("transform", "translate(" + margin.left + ", 200)");
 
 		group.append("g")
 			.attr("class", "x axis")
