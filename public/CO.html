@@ -114,12 +114,12 @@ console.log(eggs);
 
 var svg = d3.select('body').selectAll('svg')
 .data(eggs).enter().append('svg')
-.attr('width', 150)
+.attr('width', 200)
 .attr('height', 200)
 .attr('class', 'pie');
 
 svg.append('rect')
-.attr('width', 150)
+.attr('width', 200)
 .attr('height', 200)
 .attr('fill', 'white')
 .attr('stroke', 'black')
@@ -133,7 +133,7 @@ svg.append('ellipse')
 .style('fill', "#ffa500");
 
 svg.append("text")
-.attr("x", 30)
+.attr("x", 50)
 .attr("y", 10)
 .attr("dy", ".35em")
 .style("text-anchor", "middle")
