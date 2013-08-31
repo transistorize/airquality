@@ -99,19 +99,21 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
     function renderLineChart (egg) {
 
         var x = d3.time.scale()
-            .rangeRound([0, chartwidth])
-            .domain(egg.dateExtent);
+            .domain(egg.dateExtent)
+            .rangeRound([0, chartwidth]);
 
         var y = d3.scale.linear()
-            .rangeRound([chartheight, 0])
-            .domain(egg.valueExtent);
+            .domain(egg.valueExtent)
+            .rangeRound([chartheight, 0]);
 
 		var xAxis = d3.svg.axis()
 		    .scale(x)
+		    .ticks(5)
 		    .orient("bottom");
 
 		var yAxis = d3.svg.axis()
 		    .scale(y)
+		    .ticks(7)
 		    .orient("left");
 
 		var line = d3.svg.line()
