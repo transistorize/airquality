@@ -125,9 +125,6 @@ aside {
 
 
 <div id="charts">
- <!-- <div id="hour-chart" class="chart">
-    <div class="title">Readings Per Hour</div>
-  </div>  -->
   <h4>Carbon Monoxide (CO)</h4>
   <div id="COegg">
     <div class="title"></div>
@@ -236,13 +233,6 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
 
 //charts
   var charts = [
-
-   /* barChart()
-        .dimension(hour)
-        .group(hours)
-      .x(d3.scale.linear()
-        .domain([0, 24])
-        .rangeRound([0, 10 * 24])),*/
 
     barChart()
         .dimension(CO)
