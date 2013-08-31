@@ -63,15 +63,16 @@
 var radius = 74,
 padding = 10
 height = 250
-width = 200;
+width = 200
+chartheight = 75;
 
 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 var x = d3.time.scale()
-    .range([0, 800]);
+    .range([0, width]);
 
 var y = d3.scale.linear()
-    .range([600, 0]);
+    .range([height-chartheight, 0]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -145,9 +146,9 @@ svg.append("text")
 
 var group = svg.append("g")
 	.attr('width', width-5)
-  	.attr('height',75)
+  	.attr('height',chartheight)
   	.attr("x", 5)
-  	.attr("y", height-75);
+  	.attr("y", height-chartheight);
 
 group.append("g")
       .attr("class", "x axis")
