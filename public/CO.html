@@ -143,12 +143,11 @@ svg.append("text")
 
 //Line chart
 
-var group = svg.append("svg:rect")
+var group = svg.append("g")
 	.attr('width', width-5)
   	.attr('height',75)
   	.attr("x", 5)
-  	.attr("y", height-50)
-  	.attr('fill', 'white');
+  	.attr("y", height-75);
 
 group.append("g")
       .attr("class", "x axis")
