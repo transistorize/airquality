@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>egg_data_crossfilter</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/aqeeggs.css" rel="stylesheet" media="screen">
-    <link href="css/style.css" rel="stylesheet" media="screen">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/aqeeggs.css" rel="stylesheet" media="screen">
+    <link href="/css/style.css" rel="stylesheet" media="screen">    
 <style>
 
 @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js);
@@ -119,19 +119,19 @@ aside {
         <div class="container">
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="index.html">Egg Sitting</a></li>
-              <li><a href="index.html#map">All Eggs</a></li>
-              <li><a href="CO.html">Carbon Monoxide (C0)</a></li>
-              <li><a href="NO2.html">Nitrogen Dioxide (NO2)</a></li>
-              <li><a href="VOC.html">Volatile Organic Compounds (VOC)</a></li>
-              <li><a href="form.html">Add An Egg</a></li>
+              <li class="active"><a href="/index.html">Egg Sitting</a></li>
+              <li><a href="/index.html#map">All Eggs</a></li>
+              <li><a href="/CO.html">Carbon Monoxide (C0)</a></li>
+              <li><a href="/NO2.html">Nitrogen Dioxide (NO2)</a></li>
+              <li><a href="/VOC.html">Volatile Organic Compounds (VOC)</a></li>
+              <li><a href="/form.html">Add An Egg</a></li>
             </ul>
           </div>
         </div>
       </div>
     </div>
 
-<h2><strong>Egg: $EggName</strong></h2>
+    <h2><strong>Egg: <%= platformName %> </strong></h2>
 
 
 <div id="charts">
@@ -176,12 +176,10 @@ aside {
 
 </div>
 
-<script src="js/crossfilter.min.js"></script>
-<script src="js/d3.js"></script>
+<script src="/js/crossfilter.min.js"></script>
+<script src="/js/d3.v3.min.js"></script>
 <script>
-
-
-
+var uid = " <%= platformUid %> ";
 var egg = [];
 
 //d3.json("http://ghostmap.mit.edu/kdmn/eggs/uid/bd0a8296-b002-51a9-be0f-018feea0ee38/data"), function(error, readings){
@@ -626,4 +624,4 @@ renderAll();
 
 </script>
     <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>

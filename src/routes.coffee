@@ -1,16 +1,17 @@
 #
-# Handles routes
+# Handles data routes
 #
 
 "use strict"
 
 config = require 'config'
-Storage = require './storage'
+#Processor = require './processor'
 
 class Routes
 
-    constructor: (app) ->
-        @storage = new Storage()
+    constructor: (app, @storage) ->
+        
+
         app.get '/', @welcome
         app.get '/eggs', @listByPage
         app.get '/eggs/p/:page?*', @listByPage
@@ -19,7 +20,7 @@ class Routes
         app.get '/eggs/uid/:uid/data/:page?*', @getDataByUidAndPage
         app.get '/query/col/:columns', @getDataByColumn
         app.post '/upload', @postForm
-    
+        
         ###
         app.post '/eggs', routes.addNew
         app.del '/eggs/id/:pid', routes.removeById
@@ -45,7 +46,7 @@ class Routes
         else
             response.status(500).send
                 error: 'uploaded data not parsed correctly, please contact your administrator'
-
+    
     # '/eggs/p/:page', processor.listByPage
     listByPage: (request, response) =>
         page = +request.params.page || 0

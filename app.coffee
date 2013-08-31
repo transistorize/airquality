@@ -6,9 +6,11 @@
 
 "use strict"
 
-config  = require('config')
-express = require('express')
-Routes  = require('./src/routes')
+config  = require 'config'
+express = require 'express'
+Storage = require './src/storage'
+Routes  = require './src/routes'
+Views   = require './src/viewroutes'
 
 app = express()
 port = process.argv[2] || config.WebService.port
@@ -20,14 +22,16 @@ allowCrossDomain = (req, res, next) ->
     res.header 'Access-Control-Allow-Headers', 'Content-Type'
     next()
 
+
 app.configure () ->
 
     app.set 'title', 'Cypress Hills Air Quality Project'
-    
-    app.use express.compress()  # enable gzip compression
+    app.engine 'html', require('ejs').renderFile
     
     # TODO install more robust error handler, for 404s
     # app.use allowCrossDomain
+
+    app.use express.compress()  # enable gzip compression
     app.use express.errorHandler()
     app.use express.favicon()
     app.use express.methodOverride()
@@ -39,8 +43,10 @@ app.configure () ->
     # app.use express.directory('public')
     app.use express.static('public')
 
-    # non-static routes 
-    new Routes(app)
+    # non-static routes
+    storage = new Storage()
+    new Routes(app, storage)
+    new Views(app, storage)
 
 
 #configurations specific to this config environment
