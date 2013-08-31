@@ -40,7 +40,7 @@
 
 	.line {
 	  fill: none;
-	  stroke: #ffa500;
+	  stroke: #00ffa5;
 	  stroke-width: 1.5px;
 	}
 
@@ -141,7 +141,6 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.append("text")
 			.attr("transform", "rotate(-90)")
 			.attr("y", 6)
-			//.attr("x",-150)
 			.attr("dy", ".71em")
 			.style("text-anchor", "end")
 			.text("ppb");
@@ -205,7 +204,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.attr('cy', 100)
 			.attr('rx', function(d){return d.avgNO2/Math.sqrt(d.avgNO2)*2;})
 			.attr('ry', function(d){return d.avgNO2/(Math.sqrt(d.avgNO2)*4/5)*2;})
-			.style('fill', "#ffa500")
+			.style('fill', "#00ffa5")
 			.on("click", function(d){ console.log(d.id); var url = "/p/" + d.id; window.open(url, target="_self"); });
 		// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
 
