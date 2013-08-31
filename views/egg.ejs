@@ -256,7 +256,7 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .dimension(NO2)
         .group(NO2group)
       .x(d3.scale.linear()
-        .domain([4, 280])
+        .domain([4, 320])
         .rangeRound([0, 20* 21])),
 
     barChart()
@@ -265,13 +265,13 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .round(d3.time.day.round)
       .x(d3.scale.linear()
         .domain([500,700])
-        .rangeRound([0, 20 * 50])),
+        .rangeRound([0, 20 * 20])),
 
     barChart()
         .dimension(temperature)
         .group(tempgroup)
       .x(d3.scale.linear()
-        .domain([18, 30])
+        .domain([18, 40])
         .rangeRound([0, 20 * 20])),
 
     barChart()
