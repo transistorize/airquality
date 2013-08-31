@@ -129,7 +129,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.attr("height", chartheight + margin.top + margin.bottom)
 			.attr("class","linechart")
 			.append("g")
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				.attr("transform", "translate(" + margin.left + ", 200)");
 
 		group.append("g")
 			.attr("class", "x axis")
