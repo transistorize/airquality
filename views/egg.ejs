@@ -15,7 +15,7 @@
 .chart {
   display: inline-block;
   margin-bottom: 10px;
-  width: 500px;
+  width: 400px;
   height: 100px;
 }
 
@@ -261,8 +261,8 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .group(VOCgroup)
         .round(d3.time.day.round)
       .x(d3.scale.linear()
-        .domain([500,700])
-        .rangeRound([0, 20 * 20])),
+        .domain([550,900])
+        .rangeRound([0, 20 * 21])),
 
     barChart()
         .dimension(temperature)
@@ -275,7 +275,7 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
         .dimension(humidity)
         .group(humidgroup)
       .x(d3.scale.linear()
-        .domain([0, 100])
+        .domain([25, 85])
         .rangeRound([0, 10 * 25])),
 
   ];
