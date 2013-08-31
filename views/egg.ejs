@@ -294,7 +294,7 @@ d3.json("/eggs/uid/" + uid + "/data", function (error, readings){
     .data([avgCO])                // bind the selection above to this data array, must be an array of the single value
     .enter().append('svg')        // when calculating the 'enter' state change, append an svg element for each new data item
       .attr('width', 150)         // attach these attributes to any new SVG elements created
-      .attr('height', 200)
+      .attr('height', 150)
       .attr('class', 'pie');      // returns a special selection array with all the DOM nodes that were just created
 
 egg1.append('ellipse')
@@ -339,7 +339,7 @@ var egg2 = d3.select('#NO2egg').selectAll('svg')
     .data([avgNO2])
     .enter().append('svg')
       .attr('width', 150)
-      .attr('height', 200)
+      .attr('height', 150)
       .attr('class', 'pie');
 
 egg2.append('ellipse')
@@ -382,7 +382,7 @@ var egg3 = d3.select('#VOCegg').selectAll('svg')
     .data([avgVOC])
     .enter().append('svg')
       .attr('width', 150)
-      .attr('height', 200)
+      .attr('height', 150)
       .attr('class', 'pie');
 
 egg3.append('ellipse')
@@ -401,7 +401,7 @@ egg3.append('ellipse')
         .text(function(d) { return "Averages"; });
 
     egg3.append("text")
-      .attr("x", 175)
+      .attr("x", 75)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
