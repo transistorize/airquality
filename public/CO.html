@@ -141,7 +141,9 @@ svg.append("text")
 
 //Line chart
 
-var group = d3.select('svg').selectAll('g')
+var group = d3.select('svg').enter().append('g')
+
+group.selectAll('g')
   .attr('width', 150)
   .attr('height',50);
 
