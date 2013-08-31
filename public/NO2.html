@@ -18,8 +18,9 @@
       stroke: #fff;
     }
 
-    .svg:not(:hover) .nodetext{
-      display: none;
+    .svg:not(:hover) .ellipse{
+      stroke: #000;
+      stroke-weight:1;
     }
 
     @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js);
@@ -127,7 +128,7 @@ svg.append('ellipse')
 .attr('rx', function(d){return d.avgNO2/Math.sqrt(d.avgNO2)*2;})
 .attr('ry', function(d){return d.avgNO2/(Math.sqrt(d.avgNO2)*4/5)*2;})
 .style('fill', "#00ffa5")
-.on("click", function (d){ console.log(d.egg); var url = "/p/" + d.egg; window.open(url); });
+.on("click", function (d){ console.log(d.egg); var url = "/p/" + d.egg; window.location(url); });
 // orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
 
 svg.append("text")
