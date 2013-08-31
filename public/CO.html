@@ -104,8 +104,8 @@ data.data.map(function(d) {
   });
 console.log(eggs);
 
-  x.domain(d3.extent(data, function(d) { return d.dates; }));
-  y.domain(d3.extent(data, function(d) { return d.COvalues; }));
+  x.domain(d3.extent(eggs, function(d) { return d.dates; }));
+  y.domain(d3.extent(eggs, function(d) { return d.COvalues; }));
 
 
 
