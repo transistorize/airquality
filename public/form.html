@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="description" content="kinisi data platform">
 
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/aqeeggs.css" rel="stylesheet" media="screen">
+    <link href="css/style.css" rel="stylesheet" media="screen">
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,10 +28,29 @@
             d3.json('/eggs', renderResponse);                   
         }
 
+    @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js);
+
     </script>
 
   </head>
   <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="index.html">Egg Sitting</a></li>
+              <li><a href="#map">All Eggs</a></li>
+              <li><a href="CO.html">Carbon Monoxide (C0)</a></li>
+              <li><a href="NO2.html">Nitrous Dioxide (NO2)</a></li>
+              <li><a href="VOC.html">Volatile Organic Compounds (VOC)</a></li>
+              <li><a href="form.html">Add An Egg</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <form method="POST" enctype="multipart/form-data" action="upload"> 
       File to upload: 
       <input type="file" name="datafile" /><br> Notes about the file: 
