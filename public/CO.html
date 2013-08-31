@@ -97,14 +97,14 @@ data.data.map(function(d) {
   var COvalues = d.values.map(function(f){ return f.co;});
   var temp = d.values.map(function(f){ return f.temp_degc;});
   var humidity = d.values.map(function(f){ return f.humidity;});
-  var dates = d.values.map(function(f){ return f.ts;});
+  var dates = d.values.map(function(f){ return parseDate(f.ts);});
 
   eggs.push({ egg: id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  });
   
   });
 console.log(eggs);
 
-  x.domain(d3.extent(data, function(d) { return parseDate(d.dates); }));
+  x.domain(d3.extent(data, function(d) { return d.dates; }));
   y.domain(d3.extent(data, function(d) { return d.COvalues; }));
 
 
