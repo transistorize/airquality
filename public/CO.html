@@ -85,7 +85,7 @@ padding = 10
 height = 250
 width = 200
 chartheight = 75
-margin = {top: 5, right: 5, bottom: 10, left: 5};
+margin = {top: 5, right: 5, bottom: 30, left: 30};
 
 var eggs = [];
 
@@ -95,9 +95,13 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
     function renderLineChart (egg) {
 
-    	var x = d3.time.scale().range([0, width]);
+        var x = d3.time.scale()
+            .range([0, width])
+            .domain(egg.dateExtent);
 
-		var y = d3.scale.linear().range([chartheight, 0]);
+        var y = d3.scale.linear()
+            .range([chartheight, 0])
+            .domain(egg.valueExtent);
 
 		var xAxis = d3.svg.axis()
 		    .scale(x)
@@ -108,15 +112,16 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 		    .orient("left");
 
 		var line = d3.svg.line()
-		    .x(function(d) { return x(d.ts); })
-		    .y(function(d) { return y(d.co); });
+            .x(function(d) { 
+                return x(d.ts); 
+            })
+            .y(function(d, i) { 
+                return y(d.co); 
+            });
 
 		//Line chart
 
-		x.domain(d3.extent(egg, function(d){ return d.dates;}));
-		y.domain(d3.extent(egg, function(d){ return d.COvalues;}));
-
-		var group = d3.select('#egg_' + egg.id).append("svg")
+		var group = d3.select('#egg_' + egg.id).append("g")
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", chartheight + margin.top + margin.bottom)
 			.attr("class","linechart")
@@ -138,30 +143,43 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.attr("dy", ".71em")
 			.style("text-anchor", "end")
 			.text("ppb");
-
+        
 		group.append("path")
-			.datum(eggs)
+			.datum(egg.allData)
 			.attr("class", "line")
 			.attr("d", line);
     }
 
 
-    function processAndRender (data) {
+    function processAndRender (response) {
 
-    	eggs = data.data.map(function(d) {   
-    		var id = d.uid;
-    		var values = d.values;
-    		var name = d.name;
-    		var COvalues = d.values.map(function(f){ return f.co; });
-    		var temp = d.values.map(function(f){ return f.temp_degc; });
-    		var humidity = d.values.map(function(f){ return f.humidity; });
-    		var dates = d.values.map(function(f){ return parseDate(f.ts); });
+    	eggs = response.data.map(function(d) {   
+            var values = d.values;
 
-    		return { 'id': id, name: name, allData: values, COvalues: COvalues, avgCO: d3.mean(COvalues), dates: dates, 
-    			avgTempF: (d3.mean(temp)*9/5+32), avgTempC: d3.mean(temp), avgHumidity: d3.mean(humidity)  };
+            // create accessor functions for mean calculations
+            var co = function(f){ return f.co; };
+    		var temp = function(f){ return f.temp_degc; };
+    		var humidity = function(f){ return f.humidity; };
+    		var date = function(f) { return f.ts; };
+            
+            // change the timestamp in place
+            d.values.forEach(function (e) { e.ts = parseDate(e.ts); });
+
+            // calculate mean temp
+            var meanTempC = d3.mean(values, temp); 
+
+            // returns a new array with a pointer to the modified data as well means and extents
+            return { 'id': d.uid, name: d.name, allData: d.values, 
+                dateExtent: d3.extent(values, date), 
+                valueExtent: d3.extent(values, co)
+                avgCO: d3.mean(values, co), 
+                avgTempF: meanTempC * 9/5 + 32, 
+                avgTempC: meanTempC, 
+                avgHumidity: d3.mean(values, humidity)
+            };
 
     	});
-
+        
     	console.log(eggs);
 
 		//eggs
@@ -195,7 +213,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.style("text-anchor", "middle")
 			.text(function(d) { return "egg: " + d.name; });
 
-		eggs.forEach(function(egg) { renderLineChart(egg); })
+		eggs.forEach(function(egg) { renderLineChart(egg); });
 		
 }
 
