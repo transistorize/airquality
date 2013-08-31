@@ -103,7 +103,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
             .domain(egg.dateExtent);
 
         var y = d3.scale.linear()
-            .rangeRound([chartheight, 0])
+            .range([chartheight/1000, 0])
             .domain(egg.valueExtent);
 
 		var xAxis = d3.svg.axis()
