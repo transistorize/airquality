@@ -51,12 +51,20 @@
       </div>
     </div>
 
+    <p class="title-text">Add an Egg</p>
     <form method="POST" enctype="multipart/form-data" action="upload"> 
-      File to upload: 
-      <input type="file" name="datafile" /><br> 
+      File to upload: <input type="file" name="datafile" /><br> 
       <input type="radio" name="platform" id="new"> New Egg </input>
       <input type="radio" name="platform" id="current" onclick="showPlatforms();"> Current Egg </input><br><br>
       Name: <input type="text" name="name" id="eggname"/><br>
+      Name: <input type="select" name="existingnames" id="x_eggnames"/><br>
+      <select id ="x_eggnames">
+          <option value="volvo">Volvo</option>
+          <option value="saab">Saab</option>
+          <option value="opel">Opel</option>
+          <option value="audi">Audi</option>
+        </select>
+
       Group: <input type="text" name="group" id="group"/><br>
       Notes: <input type="text" name="note" /><br><br>
       <input type="submit" value="Upload egg data!" />
