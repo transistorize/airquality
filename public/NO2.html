@@ -209,7 +209,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.attr('rx', function(d){return d.avgNO2/Math.sqrt(d.avgNO2)*2;})
 			.attr('ry', function(d){return d.avgNO2/(Math.sqrt(d.avgNO2)*4/5)*2;})
 			.style('fill', "#00ffa5")
-			.on("click", function(d){ console.log(d.id); var url = "eggsitting/p/" + d.id; window.open(url, target="_self"); });
+			.on("click", function(d){ console.log(d.id); var url = "/p/" + d.id; window.open(url, target="_self"); });
 		// orange: #ffa500, pink: #ff005a, tealgreen: #00ffa5, bright blue: #005aff, bright light blue: #00daff
 
 		svg.append("text")
