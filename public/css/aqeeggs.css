@@ -29,12 +29,12 @@ body{
 a {
   color:#000;
   font-weight: bold;
+  text-decoration: underline;
 }
 
 a:hover, a:focus{
   color:#000;
   text-decoration: underline;
-  padding: 10px 7px 10px 7px;
 }
 
 .header-text {
