@@ -4,4 +4,4 @@ config/secrets.js
 config/runtime.json
 *.swp
 dist/*
-
+nosave/*
