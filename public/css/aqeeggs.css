@@ -12,7 +12,7 @@
 }
 
 .navbar .nav>li>a{
-  padding: 10px 5px 10px 5px;
+  padding: 10px 7px 10px 7px;
 }
 
 .navbar-inverse .nav>li>a:focus, .navbar-inverse .nav>li>a:hover {
@@ -33,7 +33,7 @@ a {
 a:hover, a:focus{
   color:#000;
   text-decoration: underline;
-  padding: 10px 5px 10px 5px;
+  padding: 10px 7px 10px 7px;
 }
 .eggs-div{
   background-color: #4d534e;
