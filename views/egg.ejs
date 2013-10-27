@@ -169,7 +169,7 @@ var uid = "<%= platformUid %>";
 var egg = [];
 
 //d3.json("http://ghostmap.mit.edu/kdmn/eggs/uid/bd0a8296-b002-51a9-be0f-018feea0ee38/data"), function(error, readings){
-d3.json("eggs/uid/" + uid + "/data", function (error, readings){
+d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
   //if (error) return console.warn(error);
   //console.log(readings);
   readings.data.map(function(d) {
