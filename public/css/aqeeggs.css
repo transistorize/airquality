@@ -33,7 +33,7 @@ a {
 a:hover, a:focus{
   color:#000;
   text-decoration: underline;
-
+  padding: 5px 10px 5px;
 }
 .eggs-div{
   background-color: #3B653D;
