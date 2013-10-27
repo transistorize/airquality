@@ -204,7 +204,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.attr('stroke-width', 0.5);
 
 		svg.append('ellipse')
-			.attr('cx', 75)
+			.attr('cx', width/2)
 			.attr('cy', 100)
 			.attr('rx', function(d){return d.avgCO/Math.sqrt(d.avgCO)*2;})
 			.attr('ry', function(d){return d.avgCO/(Math.sqrt(d.avgCO)*4/5)*2;})
@@ -229,7 +229,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 	      .text(function(d) { return "Averages"; });
 
 		svg.append("text")
-	      .attr("x", 75)
+	      .attr("x", width/2)
 	      .attr("y", 100)
 	      .attr("dy", ".35em")
 	      .style("text-anchor", "middle")
