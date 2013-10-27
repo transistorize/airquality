@@ -23,7 +23,7 @@ body{
   font-family: 'Bubbler One', sans-serif;
   background-color: #B0B6BD;
   padding: 0px 15% 10px 15%;
-  font-size: 1em;
+  font-size: 1.2em;
 
 }
 
@@ -87,7 +87,7 @@ a:hover, a:focus{
 
 .title-text {
   margin: 10px 0;
-  font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+  font-family:'Coming Soon', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
   line-height: 40px;
   color: #000;
   text-rendering: optimizelegibility;
