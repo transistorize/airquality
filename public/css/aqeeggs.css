@@ -105,6 +105,8 @@ a:hover, a:focus{
 	display: block;
     margin-left: 15%;
     margin-right: 15%;
+    border-color: #fff;
+    border-width: 1px;
 }
 
 .row {
