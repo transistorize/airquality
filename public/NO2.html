@@ -229,8 +229,8 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
           .text(function(d) { return "Averages"; });
 
         svg.append("text")
-          .attr("x", 200)
-          .attr("y", 30)
+          .attr("x", 75)
+          .attr("y", 100)
           .attr("dy", ".35em")
           .style("text-anchor", "middle")
           .text(function(d) { return "NO2: " + Math.round(d.avgNO2, 1); });
