@@ -10,8 +10,6 @@ config = require 'config'
 class Routes
 
     constructor: (app, @storage) ->
-        
-
         app.get '/', @welcome
         app.get '/eggs', @listByPage
         app.get '/eggs/p/:page?*', @listByPage
@@ -19,7 +17,7 @@ class Routes
         app.get '/eggs/id/:pid', @getById
         app.get '/eggs/uid/:uid/data/:page?*', @getDataByUidAndPage
         app.get '/query/col/:columns', @getDataByColumn
-        app.post '/upload', @postForm
+        app.post '/upload/:type', @postForm
         
         ###
         app.post '/eggs', routes.addNew
@@ -31,21 +29,25 @@ class Routes
     welcome: (request, response) ->
         response.json msg: 'Welcome to the Cypress Hills Air Quality Project'
 
-    # '/upload', processor.postForm
-    postForm:  (request, response) ->
-        console.log 'data_present=', request.files.datafile?
-        if request.files.datafile
-            meta = request.files.datafile
-            console.log meta.filename
+    # '/upload/:type', processor.postForm
+    postForm:  (request, response) =>
+        console.log 'file type=', request.params.type, 'platform type=', request.body.platform_type, 
+            'uid=', request.body.platform_uid, 'data_present=', request.files.datafile?
     
-            response.json
-                status: 'upload successful'
-                name: meta.filename
-                size: meta.size
-                type: meta.type
+        # TODO better arg checking    
+        # TODO create new platform if it does not exist 
+        if request.files.datafile && request.body.platform_type is 'established' && request.body.platform_uid
+            meta = request.files.datafile
+            meta.import_schema = ['ts','temp_degc','humidity','no2_raw','no2','co_raw','co','voc_raw','voc']
+
+            console.log meta.toJSON()
+            @storage.bulkCSVImport request.body.platform_uid, meta, (err, result) =>
+                if !err
+                    response.json status: 'upload successful', name: meta.name, size: meta.size, type: meta.type
+                else
+                    response.status(500).send error: 'transformation failed'
         else
-            response.status(500).send
-                error: 'uploaded data not parsed correctly, please contact your administrator'
+            response.status(500).send error: 'uploaded data not parsed correctly, please contact your administrator'
     
     # '/eggs/p/:page', processor.listByPage
     listByPage: (request, response) =>

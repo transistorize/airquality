@@ -7,6 +7,7 @@
 config = require 'config'
 getmac = require 'getmac'
 pg     = require 'pg'
+fs     = require 'fs'
 _      = require 'underscore'
 ChangeRequest = require './cr'
 
@@ -95,7 +96,7 @@ class Storage
         query 'select id from dim.platform where uid = $1::uuid limit 1', [uid], (err, result) =>
             if err || !result || !result.rows[0]?.id
                 return  cb 'error finding platform data table for uid=' + uid
-            query 'select * from fact.egg_data where platform_id = $1::int limit $2::int offset $3::int',
+            query 'select * from fact.sensor_data where platform_id = $1::int limit $2::int offset $3::int',
                 [result.rows[0]?.id, count, count * page], (err, result) ->
                     if !err
                         cb null, result.rows || []
@@ -114,7 +115,7 @@ class Storage
         replacement = '\\' + '1T\\' + '2Z'
         query """
             select p.uid, p.name, regexp_replace((f.ts at time zone 'gmt')::text, $1, $2) as ts, #{cols} 
-            from fact.egg_data f
+            from fact.sensor_data f
             join dim.platform p on p.id = f.platform_id
             order by p.uid, f.ts; """, [regex, replacement], (err, result) =>
                 if !err
@@ -132,25 +133,77 @@ class Storage
         throw new Error 'invalid arguments' if !cb or !change
         cb 'unsupported error!'
 
-    # calling this prevents anymore connections for the life of the process
+    # shuts down all storage related resources
+    # calling this should only be done by the main script
     exit: ->
         pg.end()
     
+    # bulk CSV import
+    # metainfo must have the name, path, and import_schema attributes specified
+    bulkCSVImport: (uid, metainfo, cb) ->
+        throw new Error 'invalid arguments' if !cb or !uid or !metainfo or !metainfo.path or !metainfo.name or !metainfo.import_schema
+
+        copyCSVFile = (client, cb) ->
+            # some flags to ensure callbacks aren't called multiple times
+            isCallbackCalled = false
+            errorRecv = null
+
+            wstream = client.copyFrom 'copy extraction (' metainfo.import_schema.join(',') + ') from STDIN with csv;'
+            
+            wstream.on 'finish', () -> 
+                console.log 'Imported:', metainfo
+                if !errorRecv && !isCallbackCalled
+                    callbackCalled = true
+                    cb null, metainfo.path
+
+            wstream.on 'error', (error) -> 
+                errorRecv = error
+                console.error 'error from write stream:', error, ' on behalf of uid=', uid
+                rstream.end()
+                if !callbackCalled
+                    callbackCalled = true
+                    cb error
+           
+            rstream = fs.createReadStream metainfo.path, {autoClose: true}
+            
+            rstream.on 'data', (chunk) ->
+                console.log 'reading chunk from', metainfo.name
+                stream.write chunk
+            
+            rstream.on 'error', (error) -> 
+                errorRecv = error
+                console.error 'error from read stream:', error, ' on behalf of uid=', uid
+                wstream.end()
+                if !callbackCalled
+                    callbackCalled = true
+                    cb error
+            
+            rstream.on 'close', () -> 
+                wstream.end()
+
+        copyToTempExtraction = (client, cb) ->
+            client.query "create temp table extraction (like extract.egg_data);", (err, result) ->
+                return cb 'cannot create temporary space for copying data' if err
+                copyCSVFile client, cb
+
+        @withinTransaction copyToTempExtraction, (err, result) -> 
+            # call the transformation method
+            cb err, result       
+           
     #
     # private
     #
     
     #reaggregate each row into a list of platforms and their respective values
     aggregateByPlatform = (rows) ->
-        return rows if rows.length is 0
-        
+        return rows if rows.length is 0       
         result = {}
-        aggByUidName = (row) ->
+        # helper
+        aggByUidAndName = (row) ->
             result[row.uid] = result[row.uid] || {uid: row.uid, name: row.name, values:[]}
-            result[row.uid].values.push(_.omit(row, ['uid', 'name']))
-        
-        _.each(rows, aggByUidName)
-        
+            result[row.uid].values.push(_.omit(row, ['uid', 'name'])) 
+        # transform each row
+        _.each(rows, aggByUidAndName)
         return _.values(result)
 
     # handles checking column names, returns true or false
@@ -172,12 +225,43 @@ class Storage
                     try
                         if err then console.error err
                         cb err, result
-                    catch e
-                        console.error e
+                    catch exp
+                        console.error exp
             else
                 console.error 'error with query', err
                 cb err
 
+    # private method: wrapper method for begining and ending a transaction
+    withTransaction = (innerExecution, postHook) ->
+        pg.connect config.Postgres.connection, (err, client, done) =>
+            if err
+                done()
+                return cb err
+            
+            # healper method: cleans up the transaction and pg client
+            commitOrRollback = (err, result) ->
+                if !err
+                    client.query 'commit;', (err, result) -> 
+                        done()
+                        postHook err, true
+                else
+                    client.query 'rollback;', (err, result) -> 
+                        done()
+                        postHook err, false
+
+            # start the transaction, execute the body, call commit
+            client.query 'begin;', (err, result) ->
+                if err
+                    done()
+                    return cb err
+                
+                commitCallback = commitOrRollback(cb) 
+                
+                try
+                    innerExecution client, commitCallback
+                catch exp
+                    commitCallback exp  #call with error,
+                
 
 module.exports = Storage
 

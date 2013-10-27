@@ -1,12 +1,12 @@
 #
-# spec file
+# storage unit test spec file
 #
 
 "use strict"
 
 config   = require 'config'
 pg       = require 'pg'
-Storage  = require '../dist/src/storage'
+Storage  = require '../dist/storage'
 
 # gloabal test holder
 test = {}
@@ -22,9 +22,12 @@ describe 'storage class', ->
         client = new pg.Client(config.Postgres.connection)
         client.connect (err) ->
             expect(err).toBeNull()
-            if (err) then client.end()
-            else client.query 'truncate dim.platform cascade', (err, result) ->
-                expect(err).toBeNull()
+            if !err
+                client.query 'truncate dim.platform cascade', (err, result) ->
+                    expect(err).toBeNull()
+                    client.end()
+                    done()
+            else
                 client.end()
                 done()
 

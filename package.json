@@ -10,14 +10,16 @@
   },
   "scripts": {
     "start": "coffee app.coffee",
-    "test": "mkdir -p dist/src; coffee -o dist/src --compile src; ./node_modules/jasmine-node/bin/jasmine-node --color --coffee spec"
+    "test": "coffee --ouput dist --compile src; ./node_modules/jasmine-node/bin/jasmine-node --color --coffee spec"
   },
   "dependencies": {
     "config": "0.4.x",
     "express": "3.3.x",
+    "csv2json": "*",
+    "event-stream" : "3.0.x",
     "ejs": "0.8.x",
-    "coffee-script": "1.6.3",
-    "pg": "2.3.1",
+    "coffee-script": "1.6.x",
+    "pg": "2.3.x",
     "getmac": "*",
     "underscore": "*"
   },

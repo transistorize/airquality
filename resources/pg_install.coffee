@@ -35,17 +35,10 @@ schemaScript = """
     grant all on schema fact to #{appuser};
     grant update, select, insert on all tables in schema fact to #{appuser};
     --
-    drop schema if exists staging cascade;
-    create schema staging authorization #{appuser};
-    grant all on schema staging to #{appuser};
-    grant update, select, insert on all tables in schema staging to #{appuser};
-    --
     drop schema if exists extract cascade;
     create schema extract authorization #{appuser};
     grant all on schema extract to #{appuser};
     grant update, select, insert on all tables in schema extract to #{appuser};
-
-
 """
 
 tableScript = """
@@ -85,11 +78,11 @@ tableScript = """
     drop table if exists dim.group cascade;
     create table dim.group ( like dim.document including all );
 
-    -- temporary tables to support AQE project
-    drop table if exists fact.egg_data cascade;
-    create table fact.egg_data (
-        ts timestamp with time zone not null,
+    -- temporary table to support project
+    drop table if exists fact.sensor_data cascade;
+    create table fact.sensor_data (
         platform_id integer references dim.platform(id),
+        ts timestamp with time zone not null,
         temp_degc numeric,
         humidity numeric,
         no2_raw numeric,
@@ -98,14 +91,13 @@ tableScript = """
         co numeric,
         voc_raw numeric,
         voc numeric);
-    grant select, update, insert on fact.egg_data to #{appuser};
+    grant select, update, insert on fact.sensor_data to #{appuser};
 
-    drop table if exists staging.egg_data cascade;
+    drop table if exists staging.sensor_data cascade;
  
-    drop table if exists extract.egg_data cascade;
-    create table extract.egg_data (
+    drop table if exists extract.sensor_data cascade;
+    create table extract.sensor_data (
         ts text,
-        -- platform_id
         temp_degc text,
         humidity text,
         no2_raw text,
