@@ -7,12 +7,14 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/aqeeggs.css" rel="stylesheet" media="screen">
     <link href="css/style.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://underscorejs.org/underscore-min.js" charset="uft-8"></script>
+     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script type="text/javascript">
         
         function renderResponse(err, response) {
@@ -28,7 +30,7 @@
             d3.json('/eggs', renderResponse);                   
         }
 
-    @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js);
+    //@import url("http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js");
 
     </script>
 
@@ -51,6 +53,7 @@
       </div>
     </div>
 
+
     <p class="title-text">Add an Egg</p>
     <form method="POST" enctype="multipart/form-data" action="upload"> 
       File to upload: <input type="file" name="datafile" /><br><br> 
@@ -66,9 +69,25 @@
 
       Group: <input type="text" name="group" id="group"/><br>
       Notes: <input type="text" name="note" /><br><br>
+      Location:
+              <div id="map"></div>
+              <label>Location Description:</label>
+              <p><input type="text" name="landmark.location" ng:model="landmark.location" placeholder="Example: Hicks and 9th Brooklyn NYC"/><button ng:click="locsearch()">Search</button></p>
+
       <input type="submit" value="Upload egg data!" />
     </form>
     <div id="platforms"></div>
   </body>
+   <script type="text/javascript">
+
+
+    var map = L.map('map').setView([40.677188,-73.886196], 13);
+    
+    L.tileLayer('http://{s}.tile.cloudmade.com/9b49118a2a5a494889d7b0bd5cbfbaf2/997/256/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+      maxZoom: 18 }).addTo(map);
+
+
+    </script>
 </html>
 
