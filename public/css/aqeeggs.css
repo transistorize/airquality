@@ -21,7 +21,7 @@
 
 body{
   font-family: 'Coming Soon', cursive;
-  background-color: #4d534e;
+  background-color: #B0B6BD;
 
 }
 
@@ -34,10 +34,6 @@ a:hover, a:focus{
   color:#000;
   text-decoration: underline;
   padding: 10px 7px 10px 7px;
-}
-.eggs-div{
-  background-color: #4d534e;
-
 }
 
 .header-text {
