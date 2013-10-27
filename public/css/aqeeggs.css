@@ -15,6 +15,11 @@
   color:black;
 }
 
+body{
+  font-family: 'Coming Soon', cursive;
+
+}
+
 a {
   color:#000;
   font-weight: bold;
