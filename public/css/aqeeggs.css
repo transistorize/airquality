@@ -24,6 +24,7 @@ body{
   background-color: #B0B6BD;
   padding: 0px 15% 10px 15%;
   font-size: 1.2em;
+  line-height: 1.2em;
 
 }
 
@@ -43,7 +44,7 @@ a:hover, a:focus{
 	padding-bottom: 15px;
   padding-left: 200px;
 	font-size: 3.7em;
-	font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+	font-family:'Coming Soon', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
 	margin-top: auto;
 	margin-bottom: auto;
 	color: black;
