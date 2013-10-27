@@ -16,6 +16,7 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://underscorejs.org/underscore-min.js" charset="uft-8"></script>
      <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+     <style type="text/css"> @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js); </style>
     <script type="text/javascript">
         
         function renderResponse(err, response) {
@@ -30,8 +31,6 @@
         function showPlatforms() {
             d3.json('/eggs', renderResponse);                   
         }
-
-    //@import url("http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js");
 
     </script>
 
@@ -71,7 +70,7 @@
       Group: <input type="text" name="group" id="group"/><br>
       Notes: <input type="text" name="note" /><br><br>
       Location:
-              <div id="map"></div>
+              <div id="map-add"></div>
               <label>Location Description:</label>
               <p><input type="text" name="landmark.location" ng:model="landmark.location" placeholder="Example: Hicks and 9th Brooklyn NYC"/><button ng:click="locsearch()">Search</button></p>
 

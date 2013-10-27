@@ -194,4 +194,5 @@ a:hover, a:focus{
 	margin-right:auto;
 }
 
-#map { height: 300px; }
+#map-add { height: 200px; }
+#map-all { height: 500px; }
