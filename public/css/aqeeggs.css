@@ -91,6 +91,7 @@ a:hover, a:focus{
   color: #000;
   text-rendering: optimizelegibility;
   font-size: 38.5px;
+  padding-top: 10px;
 }
 
 .subtitle-text {
