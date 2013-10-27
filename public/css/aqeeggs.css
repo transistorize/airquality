@@ -25,6 +25,10 @@ a:hover, a:focus{
   text-decoration: underline;
 
 }
+.eggs-div{
+  background-color: #3B653D;
+
+}
 
 .header-text {
 	padding-top: 35px;
