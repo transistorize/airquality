@@ -20,7 +20,7 @@
 }
 
 body{
-  font-family: 'Coming Soon', cursive;
+  font-family: 'Bubbler One', sans-serif;
   background-color: #B0B6BD;
   padding: 0px 15% 10px 15%;
 
@@ -42,7 +42,7 @@ a:hover, a:focus{
 	padding-bottom: 15px;
   padding-left: 200px;
 	font-size: 3.7em;
-	font-family:'Coming Soon', cursive; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+	font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
 	margin-top: auto;
 	margin-bottom: auto;
 	color: black;
@@ -51,7 +51,7 @@ a:hover, a:focus{
 .subheader-text {
   padding-top: 10px;
   font-size: 1.2em;
-  font-family:'Coming Soon', cursive; font-size-adjust:0.508; font-weight:normal; font-style:normal;
+  font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
   line-height: 1.2em;
   margin-top: auto;
   margin-bottom: auto;
@@ -86,7 +86,7 @@ a:hover, a:focus{
 
 .title-text {
   margin: 10px 0;
-  font-family:'Coming Soon', cursive; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+  font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
   line-height: 40px;
   color: #000;
   text-rendering: optimizelegibility;
@@ -96,7 +96,7 @@ a:hover, a:focus{
 
 .subtitle-text {
   margin: 0 0;
-  font-family:'Coming Soon', cursive; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+  font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
   line-height: 40px;
   color: #025ff1;
   text-rendering: optimizelegibility;
