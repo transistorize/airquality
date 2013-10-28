@@ -48,6 +48,16 @@
   width:200px;
 }
 
+#COegg .foreground.bar{
+  fill: #ffa500;
+}
+#NO2egg .foreground.bar{
+  fill: #00ffa5;
+}
+#VOCegg .foreground.bar{
+  fill: #ff005a;
+}
+
 #reading-list {
   min-height: 200px;
 }
