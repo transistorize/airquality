@@ -3,7 +3,8 @@
   color: #000;
   background-repeat: no-repeat;
   background-image: none;
-  border-color: black;
+  border-color: #B0B6BD;
+  font-size: 1em;
 }
 
 .navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus {
@@ -11,27 +12,40 @@
   background-color: #fff;
 }
 
+.navbar .nav>li>a{
+  padding: 10px 7px 10px 7px;
+}
+
 .navbar-inverse .nav>li>a:focus, .navbar-inverse .nav>li>a:hover {
   color:black;
+}
+
+body{
+  font-family: 'Bubbler One', sans-serif;
+  background-color: #B0B6BD;
+  padding: 0px 15% 10px 15%;
+  font-size: 1.1em;
+  line-height: 1.1em;
+
 }
 
 a {
   color:#000;
   font-weight: bold;
+  text-decoration: underline;
 }
 
 a:hover, a:focus{
   color:#000;
   text-decoration: underline;
-
 }
 
 .header-text {
-	padding-top: 35px;
+	padding-top: 25px;
 	padding-bottom: 15px;
   padding-left: 200px;
-	font-size: 3.7em;
-	font-family:"Prestige Elite W01"; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+	font-size: 3em;
+	font-family:'Coming Soon', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
 	margin-top: auto;
 	margin-bottom: auto;
 	color: black;
@@ -40,7 +54,7 @@ a:hover, a:focus{
 .subheader-text {
   padding-top: 10px;
   font-size: 1.2em;
-  font-family:"Prestige Elite W01"; font-size-adjust:0.508; font-weight:normal; font-style:normal;
+  font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
   line-height: 1.2em;
   margin-top: auto;
   margin-bottom: auto;
@@ -75,16 +89,17 @@ a:hover, a:focus{
 
 .title-text {
   margin: 10px 0;
-  font-family:"Prestige Elite W01"; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+  font-family:'Coming Soon', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
   line-height: 40px;
   color: #000;
   text-rendering: optimizelegibility;
   font-size: 38.5px;
+  padding-top: 10px;
 }
 
 .subtitle-text {
   margin: 0 0;
-  font-family:"Prestige Elite W01"; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+  font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
   line-height: 40px;
   color: #025ff1;
   text-rendering: optimizelegibility;
@@ -93,8 +108,10 @@ a:hover, a:focus{
 
 .content-container {
 	display: block;
-    margin-left: 15%;
-    margin-right: 15%;
+  padding: 10px 15% 10px 15%;
+    border-style: solid;
+    border-color: #fff;
+    border-width: 1px;
 }
 
 .row {
