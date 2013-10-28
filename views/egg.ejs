@@ -32,10 +32,10 @@
 <div id="charts">
    <h4>Temperature & Humidity</h4>
   <div id="temp-chart" class="chart">
-    <div class="title">Temperature</div>
+    <div class="title">Temperature, Average</div><span id="tempavg"></span>°F
   </div>
   <div id="humidity-chart" class="chart">
-    <div class="title">Humidity</div>
+    <div class="title">Humidity, Average: </div><span id="humidavg"></span>%
   </div>
   <h4>Carbon Monoxide (CO)</h4>
   <div id="COegg">
@@ -57,13 +57,6 @@
   </div>
   <div id="date-chart" class="chart">
     <div class="title"></div>
-  </div> <br>
-  <h4>Temperature & Humidity</h4>
-  <div id="temp-chart" class="chart">
-    <div class="title">Temperature</div>
-  </div>
-  <div id="humidity-chart" class="chart">
-    <div class="title">Humidity</div>
   </div>
 </div>
 
@@ -208,6 +201,16 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
   d3.selectAll("#total")
       .text(formatNumber(reading.size()));
 
+  // Render the avg temp.
+  d3.selectAll("#tempavg")
+      .data([avgTempF])
+      .text((function(d) { return Math.round(d,1); });
+
+ // Render the avg humidity.
+  d3.selectAll("#humidavg")
+      .data([avgHumidity])
+      .text((function(d) { return Math.round(d,1); });
+
     var eggWidth = 150,
     eggHeight = 150;
 
@@ -227,37 +230,12 @@ egg1.append('ellipse')
     .attr('ry', function(d) { return d/(Math.sqrt(d)*4/5)*2; })
     .style('fill', "#ffa500" );
 
-
 egg1.append("text")
-        .attr("x", eggWidth/2)
-        .attr("y", 50)
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .style("font-weight", "bold")
-        .text(function(d) { return "Averages"; });
-
-    egg1.append("text")
       .attr("x", eggWidth/2)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "CO: " + Math.round(d, 1); });
-
-    egg1.append("text")
-      .data([avgTempF])
-      .attr("x", eggWidth/2)
-      .attr("y", 90)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Temp: " + Math.round(d, 1); });
-
-    egg1.append("text")
-      .data([avgHumidity])
-      .attr("x", eggWidth/2)
-      .attr("y", 110)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Humidity: " + Math.round(d,1); });
 
 
 var egg2 = d3.select('#NO2egg').selectAll('svg')
@@ -275,35 +253,11 @@ egg2.append('ellipse')
     .style('fill', "#00ffa5" );
 
 egg2.append("text")
-        .attr("x", eggWidth/2)
-        .attr("y", 50)
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .style("font-weight", "bold")
-        .text(function(d) { return "Averages"; });
-
-    egg2.append("text")
       .attr("x", eggWidth/2)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "NO2: " + Math.round(d, 1); });
-
-    egg2.append("text")
-      .data([avgTempF])
-      .attr("x", eggWidth/2)
-      .attr("y", 90)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Temp: " + Math.round(d, 1); });
-
-    egg2.append("text")
-      .data([avgHumidity])
-      .attr("x", eggWidth/2)
-      .attr("y", 110)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Humidity: " + Math.round(d,1); });
 
 var egg3 = d3.select('#VOCegg').selectAll('svg')
     .data([avgVOC])
@@ -320,35 +274,12 @@ egg3.append('ellipse')
     .style('fill', "#ff005a" );
 
     egg3.append("text")
-        .attr("x", eggWidth/2)
-        .attr("y", 50)
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .style("font-weight", "bold")
-        .text(function(d) { return "Averages"; });
-
-    egg3.append("text")
       .attr("x", eggWidth/2)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "VOC: " + Math.round(d, 1); });
 
-    egg3.append("text")
-      .data([avgTempF])
-      .attr("x", eggWidth/2)
-      .attr("y", 90)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Temp: " + Math.round(d, 1); });
-
-    egg3.append("text")
-      .data([avgHumidity])
-      .attr("x", eggWidth/2)
-      .attr("y", 110)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Humidity: " + Math.round(d,1); });
 
 renderAll();
 
