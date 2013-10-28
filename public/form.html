@@ -8,15 +8,18 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/aqeeggs.css" rel="stylesheet" media="screen">
     <link href="css/style.css" rel="stylesheet" media="screen">
+    <link href="css/upload.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <style type="text/css"> @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js); </style>
+
     <!-- HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://underscorejs.org/underscore-min.js" charset="uft-8"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-    <style type="text/css"> @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js); </style>
     <script type="text/javascript">
     
         // todo make this pick-list pageable
@@ -90,41 +93,6 @@
 
      
     </script>
-    <style>
-        @import url(http://fast.fonts.net/jsapi/e6087e24-2280-44b0-a660-e3e0ff2fdb19.js);
-        #platforms {
-            display:none;
-            float:left;
-        }
-        li.pickable {
-            width: 300px;
-            margin: 10px;
-        }
-        li.pickable:hover {
-            background-color: lightgray;
-        
-        }
-        li.chosen {
-            background-color: lightblue;
-        }
-        input.search {
-            margin: 5px;
-        }
-        form {
-            margin-top: 20px;
-        }
-        #new, #current {
-            padding: 5px;
-            margin: 10px;
-        }
-        #platform_chosen {
-            margin-left: 10px;
-            font-weight: bold;
-        }
-
-    </style>
-
-
 
   </head>
   <body>
@@ -147,12 +115,33 @@
     <br>
     <div class='content-wrapper'>
         <div>
-            <form method="POST" enctype="multipart/form-data" action="/upload/csv" accept="text"> I want to add data to: 
+            <form method="POST" enctype="multipart/form-data" action="/upload/csv" accept-charset="UTF-8"> I want to add data to: 
                 <input type="radio" name="platform_type" id="new" value="new" checked="checked" onclick="clearSelections();"> a new egg </input>
                 <input type="radio" name="platform_type" id="current" value="established" onclick="showPlatforms();"> a previous egg </input>
                 <span id="platform_chosen"></span>
                 <input type="hidden"  name="platform_uid" id="platform_uid" />
+                 Name: <input type="text" name="name" id="eggname"/><br>
+                 <div id="platforms">
+                    Search listed eggs: <input class="search" />
+                    <br>
+                    <ul class="list">
+                        <li class="removeable"> 
+                            <span class="name">Getting all eggs - hold on tight!</span>
+                        </li>
+                    </ul>
+                </div>
+
+                Group: <input type="text" name="group" id="group"/><br>
+                Notes: <input type="text" name="note" /><br><br>
                 
+                Location:
+              <div id="map-add"></div>
+              <label>Location Description:</label>
+              <p>
+              <input type="text" name="landmark.location" ng:model="landmark.location" placeholder="Example: Hicks and 9th Brooklyn NYC"/>
+              <button ng:click="locsearch()">Search</button>
+              </p>
+
                 <br><br>
 
                 CSV data file to upload: <input type="file" id="datafile" name="datafile" onchange="fileChosen(this);" /><br><br>
@@ -160,16 +149,20 @@
                 <input class='submit' type="submit" value="Submit this CSV file" disabled="true" />
             </form>
         </div>
-        <div id="platforms">
-            Search listed eggs: <input class="search" />
-            <br>
-            <ul class="list">
-                <li class="removeable"> 
-                    <span class="name">Getting all eggs - hold on tight!</span>
-                </li>
-            </ul>
-        </div>
-    </div>
+           </div>
   </body>
+
+   <script type="text/javascript">
+
+
+    var map = L.map('map-add').setView([40.677188,-73.886196], 15);
+
+    L.tileLayer('http://{s}.tile.cloudmade.com/9b49118a2a5a494889d7b0bd5cbfbaf2/997/256/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+      maxZoom: 18 }).addTo(map);
+
+
+    </script>
+  
 </html>
 

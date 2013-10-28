@@ -32,14 +32,13 @@ class Routes
     # '/upload/:type', processor.postForm
     postForm:  (request, response) =>
         console.log 'file type=', request.params.type, 'platform type=', request.body.platform_type, 
-            'uid=', request.body.platform_uid, 'data_present=', request.files.datafile?
+            'uid=', request.body.platform_uid, 'data_present=', request.files?.datafile
     
         # TODO better arg checking    
         # TODO create new platform if it does not exist 
-        if request.files.datafile && request.body.platform_type is 'established' && request.body.platform_uid
+        if request.files?.datafile && request.body?.platform_type is 'established' && request.body?.platform_uid
             meta = request.files.datafile
-            meta.import_schema = ['ts','temp_degc','humidity','no2_raw','no2','co_raw','co','voc_raw','voc']
-
+           
             console.log meta.toJSON()
             @storage.bulkCSVImport request.body.platform_uid, meta, (err, result) =>
                 if !err
@@ -47,7 +46,7 @@ class Routes
                 else
                     response.status(500).send error: 'transformation failed'
         else
-            response.status(500).send error: 'uploaded data not parsed correctly, please contact your administrator'
+            response.status(400).send error: 'uploaded data not parsed correctly, bad request'
     
     # '/eggs/p/:page', processor.listByPage
     listByPage: (request, response) =>
