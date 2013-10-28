@@ -149,9 +149,16 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 			.datum(egg.allData)
 			.attr("class", "line")
 			.attr("d", line)
-      .on("mouseover", function(d,i) { console.log(d[i].voc); });
+      .attr("fill", "#000")
+      .on("mouseover", mMove)
+      .append("title");
     }
 
+    function mMove(){
+
+       var m = d3.svg.mouse(this);
+      d3.select("#path").select("title").text(m[1]);
+    }
 
     function processAndRender (response) {
 
