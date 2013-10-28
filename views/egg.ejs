@@ -162,7 +162,7 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
         .group(COgroup)
       .x(d3.scale.linear()
         .domain([400, 1000])
-        .colors([#ffa500])
+        .colors(['#ffa500'])
         .rangeRound([0, 20 * 21])),
 
     barChart()
@@ -170,7 +170,7 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
         .group(NO2group)
       .x(d3.scale.linear()
         .domain([0, 500])
-        .colors([#00ffa5])
+        .colors(['#00ffa5'])
         .rangeRound([0, 20* 21])),
 
     barChart()
@@ -179,7 +179,7 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
         .round(d3.time.day.round)
       .x(d3.scale.linear()
         .domain([525,850])
-        .colors([#ff005a])
+        .colors(['#ff005a'])
         .rangeRound([0, 20 * 21])),
 
   ];
