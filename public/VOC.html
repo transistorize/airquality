@@ -156,7 +156,7 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
     function mMove(){
 
-       var m = d3.svg.mouse(this);
+       var m = d3.mouse(this);
       d3.select("#path").select("title").text(m[1]);
     }
 
