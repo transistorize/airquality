@@ -31,7 +31,9 @@
 
             // remove stand-ins
             d3.selectAll('.removeable').remove();
-            
+            if !response 
+                return;
+
             if (_.has(response, 'platforms') && _.isArray(response.platforms)) {
                 items = d3.select('#platforms > ul').selectAll('li')
                     .data(response.platforms).enter()
@@ -58,7 +60,7 @@
         function showPlatforms() {
             d3.select('span#platform_chosen').text('Choose from the list of eggs below');
             d3.select('#platforms').style('display', 'block');
-            d3.json('/eggs', renderResponse);                   
+            d3.json('eggs', renderResponse);                   
         }
 
         function selectPlatform(platform, index) {
