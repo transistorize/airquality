@@ -138,58 +138,17 @@ class Storage
     exit: ->
         pg.end()
     
+    # Bulk Extract, Transform, Load Methods
+
     # bulk CSV import
-    # metainfo must have the name, path, and import_schema attributes specified
+    # metainfo must have the name and path attributes specified
     bulkCSVImport: (uid, metainfo, cb) ->
-        throw new Error 'invalid arguments' if !cb or !uid or !metainfo or !metainfo.path or !metainfo.name or !metainfo.import_schema
-
-        copyCSVFile = (client, cb) ->
-            # some flags to ensure callbacks aren't called multiple times
-            isCallbackCalled = false
-            errorRecv = null
-
-            wstream = client.copyFrom 'copy extraction (' metainfo.import_schema.join(',') + ') from STDIN with csv;'
-            
-            wstream.on 'finish', () -> 
-                console.log 'Imported:', metainfo
-                if !errorRecv && !isCallbackCalled
-                    callbackCalled = true
-                    cb null, metainfo.path
-
-            wstream.on 'error', (error) -> 
-                errorRecv = error
-                console.error 'error from write stream:', error, ' on behalf of uid=', uid
-                rstream.end()
-                if !callbackCalled
-                    callbackCalled = true
-                    cb error
-           
-            rstream = fs.createReadStream metainfo.path, {autoClose: true}
-            
-            rstream.on 'data', (chunk) ->
-                console.log 'reading chunk from', metainfo.name
-                stream.write chunk
-            
-            rstream.on 'error', (error) -> 
-                errorRecv = error
-                console.error 'error from read stream:', error, ' on behalf of uid=', uid
-                wstream.end()
-                if !callbackCalled
-                    callbackCalled = true
-                    cb error
-            
-            rstream.on 'close', () -> 
-                wstream.end()
-
-        copyToTempExtraction = (client, cb) ->
-            client.query "create temp table extraction (like extract.egg_data);", (err, result) ->
-                return cb 'cannot create temporary space for copying data' if err
-                copyCSVFile client, cb
-
-        @withinTransaction copyToTempExtraction, (err, result) -> 
-            # call the transformation method
-            cb err, result       
-           
+        throw new Error 'invalid arguments' if !cb or !uid or !metainfo or !metainfo.path or !metainfo.name 
+        schema = ['ts','temp_degc','humidity','no2_raw','no2','co_raw','co','voc_raw','voc']        
+        copyFrom metainfo.path, metainfo.name, 'extract.sensor_data', schema, (err, result) ->
+            console.log 'completed copy, ready for transformation';
+            cb null, 'success'
+                    
     #
     # private
     #
@@ -238,13 +197,15 @@ class Storage
                 done()
                 return cb err
             
-            # healper method: cleans up the transaction and pg client
+            # helper method: cleans up the transaction and pg client
             commitOrRollback = (err, result) ->
                 if !err
+                    # tell the db to commit the transaction
                     client.query 'commit;', (err, result) -> 
                         done()
                         postHook err, true
                 else
+                    #roll back the current transaction
                     client.query 'rollback;', (err, result) -> 
                         done()
                         postHook err, false
@@ -260,8 +221,59 @@ class Storage
                 try
                     innerExecution client, commitCallback
                 catch exp
-                    commitCallback exp  #call with error,
-                
+                    commitCallback exp  #call with error
+                    
+    # private method: copy a csv text file from the local filesystem into a temporary table of the db
+    copyFrom = (name, path, template, copySchema, cb) ->
+        
+        copyCSVFile = (client, cb) ->
+            # some flags to ensure callbacks aren't called multiple times
+            isCallbackCalled = false
+            errorRecv = null
+            
+            # open the sink stream
+            wstream = client.copyFrom 'copy extraction (' + copySchema.join(',') + ') from STDIN with csv;'
+            
+            wstream.on 'finish', () -> 
+                console.log 'Imported:', name, path
+                if !errorRecv && !isCallbackCalled
+                    callbackCalled = true
+                    cb null, readPath
+
+            wstream.on 'error', (error) -> 
+                errorRecv = error
+                console.error 'error from write stream:', error, ' on behalf of uid=', uid
+                rstream.end()
+                if !callbackCalled
+                    callbackCalled = true
+                    cb error
+           
+            # open the source stream
+            rstream = fs.createReadStream readPath, {autoClose: true}
+            
+            rstream.on 'data', (chunk) ->
+                console.log 'reading chunk from ', name
+                stream.write chunk
+            
+            rstream.on 'error', (error) -> 
+                errorRecv = error
+                console.error 'error from read stream:', error, ' on behalf of uid=', uid
+                wstream.end()
+                if !callbackCalled
+                    callbackCalled = true
+                    cb error
+            
+            rstream.on 'close', () -> 
+                wstream.end()
+
+        copyToTempTable = (client, cb) ->
+            client.query 'create temp table extraction (like ' + template + ');', (err, result) ->
+                return cb 'cannot create temporary space for copying data' if err
+                copyCSVFile client, cb
+
+        # kick off the whole chain
+        withTransaction copyToTempTable, cb
+        
 
 module.exports = Storage
 
