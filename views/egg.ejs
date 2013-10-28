@@ -204,12 +204,12 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
   // Render the avg temp.
   d3.selectAll("#tempavg")
       .data([avgTempF])
-      .text((function(d) { return Math.round(d,1); });
+      .text((function(d) { return Math.round(d,1); }));
 
  // Render the avg humidity.
   d3.selectAll("#humidavg")
       .data([avgHumidity])
-      .text((function(d) { return Math.round(d,1); });
+      .text((function(d) { return Math.round(d,1); }));
 
     var eggWidth = 150,
     eggHeight = 150;
