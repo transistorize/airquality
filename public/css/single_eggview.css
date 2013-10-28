@@ -48,13 +48,13 @@
   width:200px;
 }
 
-#COegg .foreground.bar{
+#delay-chart .foreground.bar{
   fill: #ffa500;
 }
-#NO2egg .foreground.bar{
+#distance-chart .foreground.bar{
   fill: #00ffa5;
 }
-#VOCegg .foreground.bar{
+#date-chart .foreground.bar{
   fill: #ff005a;
 }
 
