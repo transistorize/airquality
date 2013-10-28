@@ -1,0 +1,92 @@
+#charts {
+  padding: 10px 0;
+}
+
+.chart {
+  display: inline-block;
+  margin-bottom: 10px;
+  width: 400px;
+  height: 100px;
+}
+
+.reset {
+  padding-left: 1em;
+  font-size: smaller;
+  color: #ccc;
+}
+
+.background.bar {
+  fill: #ccc;
+}
+
+.foreground.bar {
+  fill: #00daff;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.brush rect.extent {
+  fill: #00daff;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+#COegg, #NO2egg, #VOCegg{
+  display: inline-block;
+  width:200px;
+}
+
+#reading-list {
+  min-height: 200px;
+}
+
+#reading-list .date,
+#reading-list .day {
+  margin-bottom: .4em;
+}
+
+#reading-list .reading {
+  line-height: 1.5em;
+  background: #eee;
+  width: 640px;
+  margin-bottom: 1px;
+}
+
+#reading-list .time {
+  color: #999;
+}
+
+#reading-list .reading div {
+  display: inline-block;
+  width: 100px;
+}
+
+#reading-list div.distance,
+#reading-list div.delay {
+  width: 160px;
+  padding-right: 10px;
+  text-align: right;
+}
+
+#reading-list .early {
+  color: green;
+}
+
+aside {
+  position: absolute;
+  left: 740px;
+  font-size: smaller;
+  width: 220px;
+}
