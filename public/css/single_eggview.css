@@ -35,7 +35,7 @@
 
 .brush rect.extent {
   fill: #ccc;
-  fill-opacity: .25;
+  fill-opacity: .40;
 }
 
 .brush .resize path {
