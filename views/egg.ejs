@@ -28,11 +28,12 @@
     </div>
 
     <h3 class="title-text"><strong>Egg: <%= platformName %> </strong></h3>
+    <aside id="totals"><span id="active">-</span> of <span id="total">-</span> readings selected.</aside>
 
 <div id="charts">
    <h4>Temperature & Humidity</h4>
   <div id="temp-chart" class="chart">
-    <div class="title">Temperature, Average <span id="tempavg"></span>°F </div> <br>
+    <div class="title">Temperature, Average: <span id="tempavg"></span>°F </div> <br>
   </div>
   <div id="humidity-chart" class="chart">
     <div class="title">Humidity, Average: <span id="humidavg"></span>% </div> <br>
@@ -58,12 +59,6 @@
   <div id="date-chart" class="chart">
     <div class="title"></div>
   </div>
-</div>
-
-<aside id="totals"><span id="active">-</span> of <span id="total">-</span> readings selected.</aside>
-
-<div id="lists">
-  <div id="reading-list" class="list"></div>
 </div>
 
 </div>
@@ -167,6 +162,7 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
         .group(COgroup)
       .x(d3.scale.linear()
         .domain([400, 1000])
+        .colors([#ffa500])
         .rangeRound([0, 20 * 21])),
 
     barChart()
@@ -174,6 +170,7 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
         .group(NO2group)
       .x(d3.scale.linear()
         .domain([0, 500])
+        .colors([#00ffa5])
         .rangeRound([0, 20* 21])),
 
     barChart()
@@ -182,6 +179,7 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
         .round(d3.time.day.round)
       .x(d3.scale.linear()
         .domain([525,850])
+        .colors([#ff005a])
         .rangeRound([0, 20 * 21])),
 
   ];
