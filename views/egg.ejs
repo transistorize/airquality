@@ -29,8 +29,14 @@
 
     <h3 class="title-text"><strong>Egg: <%= platformName %> </strong></h3>
 
-
 <div id="charts">
+   <h4>Temperature & Humidity</h4>
+  <div id="temp-chart" class="chart">
+    <div class="title">Temperature</div>
+  </div>
+  <div id="humidity-chart" class="chart">
+    <div class="title">Humidity</div>
+  </div>
   <h4>Carbon Monoxide (CO)</h4>
   <div id="COegg">
     <div class="title"></div>
@@ -150,6 +156,20 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
   var charts = [
 
     barChart()
+        .dimension(temperature)
+        .group(tempgroup)
+      .x(d3.scale.linear()
+        .domain([18, 40])
+        .rangeRound([0, 10 * 20])),
+
+    barChart()
+        .dimension(humidity)
+        .group(humidgroup)
+      .x(d3.scale.linear()
+        .domain([25, 85])
+        .rangeRound([0, 10 * 25])),
+
+    barChart()
         .dimension(CO)
         .group(COgroup)
       .x(d3.scale.linear()
@@ -170,20 +190,6 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
       .x(d3.scale.linear()
         .domain([525,850])
         .rangeRound([0, 20 * 21])),
-
-    barChart()
-        .dimension(temperature)
-        .group(tempgroup)
-      .x(d3.scale.linear()
-        .domain([18, 40])
-        .rangeRound([0, 10 * 20])),
-
-    barChart()
-        .dimension(humidity)
-        .group(humidgroup)
-      .x(d3.scale.linear()
-        .domain([25, 85])
-        .rangeRound([0, 10 * 25])),
 
   ];
 
