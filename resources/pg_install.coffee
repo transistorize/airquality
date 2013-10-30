@@ -119,6 +119,7 @@ tableScript = """
         co text,
         voc_raw text,
         voc text);
+    grant select on table extract.sensor_data to #{appuser};
 
 """
 
