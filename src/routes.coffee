@@ -5,7 +5,7 @@
 "use strict"
 
 config = require 'config'
-#Processor = require './processor'
+_ = require 'underscore'
 
 class Routes
 
@@ -18,39 +18,81 @@ class Routes
         app.get '/eggs/uid/:uid/data/:page?*', @getDataByUidAndPage
         app.get '/query/col/:columns', @getDataByColumn
         app.post '/upload/:type', @postForm
+        #app.post '/eggs', @update
         
         ###
-        app.post '/eggs', routes.addNew
         app.del '/eggs/id/:pid', routes.removeById
         app.post '/eggs/id/:pid/data', routes.addDataById
         ###
 
-    # '/', processor.welcomeJson
+    # '/'
     welcome: (request, response) ->
         response.json msg: 'Welcome to the Cypress Hills Air Quality Project'
 
-    # '/upload/:type', processor.postForm
+    # POST '/eggs'
+    addNewOrModify: (request, response) =>
+        console.log request.body
+        if request.body && _.has(request.body, 'name')
+            @storage.createNewPlatform request.body, (err, platform) ->
+                if !err
+                    response.send status: 'ok', platforms: [ platform ]
+                else
+                    response.status(500).send status: 'rejected', error: err
+        else
+            reponse.status(400).send status: 'rejected', error: 'body had insufficient content, bad request'
+                   
+    # POST '/upload/:type', processor.postForm
     postForm:  (request, response) =>
-        console.log 'file type=', request.params.type, 'platform type=', request.body.platform_type, 
-            'uid=', request.body.platform_uid, 'data_present=', request.files?.datafile
+        console.log 'file type =', request.params.type, ', platform type =', request.body.platform_type, 
+            ', uid =', request.body.platform_uid, ', name=', request.body.name,  '\ndata_present=', (request.files != null)
+   
+        if request.params.type is 'test'
+            return response.json [request.body, request.files]
+        
+        if request.params.type is 'redirect'
+            return response.redirect('p/' + request.body.platform_uid)
+        
+        if request.params.type isnt 'csv'
+            return response.status(400).send status: 'rejected', error: 'file type not supported'
+
+        if !request.body.name and !request.body.platform_uid
+            return response.status(400).send status: 'rejected', error: 'name not provided'
+       
+        if !request.body.platform_uid and request.body.name
+            body = {name: request.body.name}
+            @storage.createPlatform body, (err, platform) =>
+                if !err 
+                    request.body.platform_uid = platform.uid
+                    request.body.platform_id = platform.id
+                    @postDataByUid request, response
+                else 
+                    response.status(500).send status: 'rejected', error: 'could not create record for egg'
+        else
+            @postDataByUid request, response
     
+    postDataByUid: (request, response) =>   
         # TODO better arg checking    
         # TODO create new platform if it does not exist 
-        if request.files?.datafile && request.body?.platform_type is 'established' && request.body?.platform_uid
-            meta = request.files.datafile
-           
-            console.log meta.toJSON()
-            @storage.bulkCSVImport request.body.platform_uid, meta, (err, result) =>
+        if request.files?.datafiles and request.body?.platform_uid
+            
+            if _.isObject(request.files?.datafiles) and _.has(request.files?.datafiles, 'name') 
+                meta = [ request.files.datafiles ] 
+            else
+                meta = request.files.datafiles
+                        
+            @storage.bulkCSVImport request.body.platform_uid, meta, (err, result) => 
+                console.log 'return from import', err, result
                 if !err
-                    response.json status: 'upload successful', name: meta.name, size: meta.size, type: meta.type
+                    response.redirect('p/' + request.body.platform_uid)
                 else
-                    response.status(500).send error: 'transformation failed'
+                    console.error err
+                    response.status(500).send status: 'rejected', error: 'transformation failed'
         else
-            response.status(400).send error: 'uploaded data not parsed correctly, bad request'
-    
+            response.status(400).send status: 'rejected', error: 'no uid, bad request'
+       
     # '/eggs/p/:page', processor.listByPage
     listByPage: (request, response) =>
-        page = +request.params.page || 0
+        page = +request.params.page or 0
         @storage.getPlatforms page, 20, (err, platforms) ->
             if !err
                 response.send 'platforms': platforms, 'page': page
@@ -78,7 +120,7 @@ class Routes
     # '/eggs/uid/:uid/data/:page', processor.getDataByIdAndPage
     getDataByUidAndPage: (request, response) =>
         return response.status(404).send 'resource not found' if !request.params.uid
-        page = +request.params.page || 0
+        page = +request.params.page or 0
         uid = request.params.uid
         @storage.getDataByUidAndPage uid, page, (err, data) ->
             if !err
@@ -96,6 +138,6 @@ class Routes
             else
                 response.status(500).send error: 'internal server error: ' + err
 
-    # '/eggs/id/:pid/data', processor.addDataById
+
 module.exports = Routes
 

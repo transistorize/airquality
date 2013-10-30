@@ -12,6 +12,10 @@ Storage = require './src/storage'
 Routes  = require './src/routes'
 Views   = require './src/viewroutes'
 
+
+process.on 'exit', () ->
+    console.log 'Goodbye!'
+
 app = express()
 port = process.argv[2] || config.WebService.port
 
@@ -45,6 +49,13 @@ app.configure () ->
 
     # non-static routes
     storage = new Storage()
+    process.on 'uncaughtException', (err) ->
+        console.log 'Caught exception:', err
+        storage.exit()
+    process.on 'exit', () ->
+        storage.exit()
+
+
     new Routes(app, storage)
     new Views(app, storage)
 
@@ -57,6 +68,4 @@ app.configure 'development', () ->
 
 console.log 'listening via HTTP on', port
 app.listen port
-
-
 

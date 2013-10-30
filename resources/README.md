@@ -1,11 +1,10 @@
 Required steps to setup the web application
 -------------------------------------------
 
-Requirements: node, npm, postgres, linux, git
+Dependencies: node, npm, postgres, linux, git
 
 
 1.  Ensure node is installed. Locally is preferable, to ensure proper verisons. 
-    TODO - add checks for this inside scripts.
 
 
         sh install_node.sh
@@ -17,16 +16,16 @@ Requirements: node, npm, postgres, linux, git
 
         sudo apt-get install g++
         sudo apt-get install git
-        sudo apt-get install postgresql-9.1 postgresql-server-dev-9.1 postgresql-contrib-9.1
+        sudo apt-get install postgresql-9.2 postgresql-server-dev-9.2 postgresql-contrib-9.2
     
-    With those two last commands, I installed postgres v9.1, but v9.2 is good too. The server development files are needed by the node postgres bindings.  For the necessary changes made post-install, following the instructions here:
+    With those two last commands, I installed postgres v9.2, but v9.1 may work as well. The server development files are needed by the node postgres bindings.  For the necessary changes made post-install, following the instructions here:
     https://help.ubuntu.com/10.04/serverguide/postgresql.html
     Note: I have documented my steps as best as possible here, but you should read the PostgreSQL admin guide if you want more in-depth information that is out of scope for this README. This is by no means a complete setup to secure everything.
 
 3. Modify postgresq.conf:
 
 
-        sudo vim /etc/postgresql/9.1/main/postgresql.conf
+        sudo vim /etc/postgresql/9.2/main/postgresql.conf
 
     On my version, I changed line 59 to remove the hashtag/pound sign.
 
@@ -113,13 +112,14 @@ Requirements: node, npm, postgres, linux, git
         npm install -g forever
 
 13. Configure any firewall or proxy needs, including setting: 
-     1. the NODE_ENV variable
+     1. the NODE_ENV variable, i.e. set it to 'production'
      2. the 'production' configuration files under config/* 
         * This file must be copied and modified from the default.coffee file on first install.
         * The host/port address
-        * Create the configured 'uploads' directory
+        * Create the configured 'uploads' directory in the top level directory
         * A location to store the logs from the app, a.k.a. forever logs
 
 14. Start the app:
 
-        forever -p /home/<user>/local/data/logs -c coffee start app.coffee
+        forever -c coffee start app.coffee
+

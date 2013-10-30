@@ -1,14 +1,16 @@
 #platforms {
-    display:none;
-    float:left;
+    display: none;
+}
+.list {
+    overflow: auto;
+    border: 1px solid lightgray;
+    margin: 0px;
 }
 li.pickable {
-    width: 300px;
-    margin: 10px;
+    margin: 5px;
 }
 li.pickable:hover {
     background-color: lightgray;
-
 }
 li.chosen {
     background-color: lightblue;
@@ -23,8 +25,14 @@ form {
     padding: 5px;
     margin: 10px;
 }
-#platform_chosen {
-    margin-left: 10px;
-    font-weight: bold;
+.left {
+    display:inline;
+    float: left;
+    width: 30%;
 }
+.right {
+    display:inline;
+    float: left;
+}
+.clear { clear: both; }
 

@@ -25,15 +25,22 @@ schemaScript = """
     drop schema if exists kinisi cascade;
     create schema kinisi authorization #{superuser};
     create sequence kinisi.local_salt_seq;
+    grant usage on schema kinisi to #{appuser};
+    grant all on kinisi.local_salt_seq to #{appuser};
     --
     drop schema if exists dim cascade;
     create schema dim authorization #{superuser};
     grant usage on schema dim to #{appuser};
     --
     drop schema if exists fact cascade;
-    create schema fact authorization #{appuser};
+    create schema fact authorization #{superuser};
     grant all on schema fact to #{appuser};
-    grant update, select, insert on all tables in schema fact to #{appuser};
+    grant select, insert on all tables in schema fact to #{appuser};
+    --
+    drop schema if exists staging cascade;
+    create schema staging authorization #{appuser};
+    grant all on schema staging to #{appuser};
+    grant update, select, insert on all tables in schema staging to #{appuser};
     --
     drop schema if exists extract cascade;
     create schema extract authorization #{appuser};
@@ -54,6 +61,8 @@ tableScript = """
         uuid_generate_v1(), 
         'kinisi_prototype', 
         now());
+    
+    grant select on kinisi.local to #{appuser};
 
     -- dim.document
     drop table if exists dim.document cascade;
@@ -69,8 +78,11 @@ tableScript = """
 
     drop table if exists dim.platform cascade;
     create table dim.platform ( like dim.document including all,
+        lat numeric,
+        lng numeric,
         lastupdate timestamp default now() );
-    grant select, update, insert on dim.platform to #{appuser};
+    grant all on dim.platform to #{appuser};
+    grant all on dim.document_id_seq to #{appuser};
 
     drop table if exists dim.user cascade;
     create table dim.user ( like dim.document including all );
@@ -94,6 +106,7 @@ tableScript = """
     grant select, update, insert on fact.sensor_data to #{appuser};
 
     drop table if exists staging.sensor_data cascade;
+    create table staging.sensor_data (like fact.sensor_data);
  
     drop table if exists extract.sensor_data cascade;
     create table extract.sensor_data (

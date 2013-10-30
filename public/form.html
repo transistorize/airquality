@@ -17,8 +17,9 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="http://underscorejs.org/underscore-min.js" charset="uft-8"></script>
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script src="js/underscore-min.js" charset="uft-8"></script>
+    <script src="js/list.min.js" charset="utf-8"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <style type="text/css"> @import url(http://fonts.googleapis.com/css?family=Coming+Soon|Bubbler+One); </style>
     <script type="text/javascript">
@@ -26,13 +27,14 @@
         // todo make this pick-list pageable
 
         function renderResponse(err, response) {
-            var options = { valueNames: [ 'name', 'created', 'description' ]}, 
+            var options = { valueNames: ['name', 'created', 'description'] }, 
                 format = d3.time.format("created @ %Y-%m-%d %I:%m %p");
 
             // remove stand-ins
             d3.selectAll('.removeable').remove();
-            if !response 
+            if (!response) {
                 return;
+            }
 
             if (_.has(response, 'platforms') && _.isArray(response.platforms)) {
                 items = d3.select('#platforms > ul').selectAll('li')
@@ -66,24 +68,28 @@
         function selectPlatform(platform, index) {
             d3.selectAll('li.chosen').classed('chosen', false);
             d3.select(this).classed('chosen', true);
-            d3.select('input#platform_uid').property('value', platform.uid);
-            d3.select('span#platform_chosen').text('called ' + platform.name);
+            d3.select('#platform_uid').property('value', platform.uid);
+            d3.select('#name').property('value', platform.name);
+            d3.select('#description').property('value', platform.description);
             updateSubmitBtnState();
         }
 
         function clearSelections() {
+            d3.select('#platforms').style('display', 'none');
             d3.selectAll('li.chosen').classed('chosen', false);
-            d3.select('input#platform_uid').property('value', null);
-            d3.select('span#platform_chosen').text(null); 
+            d3.select('#platform_uid').property('value', null);
+            d3.select('#name').property('value', null); 
+            d3.select('#description').property('value', null);
             updateSubmitBtnState();
         }
 
-        function fileChosen(input) {
+        function filesChosen(input) {
+            console.log(input.files);
             updateSubmitBtnState(input.value);
         }
 
-        function updateSubmitBtnState(uploadFileName) {
-            var datafileInput = uploadFileName || d3.select('input#datafile').property('value');
+        function updateSubmitBtnState(uploadFileNames) {
+            var datafileInput = uploadFileNames || d3.select('input#datafiles').property('value');
             var uid = d3.select('input#platform_uid').property('value');
             var isANewPlatform = d3.select('input#new').property('checked');
 
@@ -92,6 +98,13 @@
             } else {
                 d3.select('input.submit').attr('disabled', 'true');
             }
+        }
+
+        function submit(input) {
+            console.log (d3.select("#datafiles"));
+
+            //d3.xhr('/upload/test')    
+
         }
 
      
@@ -116,41 +129,42 @@
       </div>
     </div>
     <br>
-    <div class='content-wrapper'>
+    <div class="content-wrapper">
     <p class="title-text">Add or Update an Egg</p>
         <div>
-            <form method="POST" enctype="multipart/form-data" action="/upload/csv" accept-charset="UTF-8"> I want to add data to: 
+            <form method="POST" enctype="multipart/form-data" action="upload/csv" accept-charset="UTF-8"> I want to add data to: 
+                <div class="parent">
+                <div class="left">
                 <input type="radio" name="platform_type" id="new" value="new" checked="checked" onclick="clearSelections();"> a new egg </input>
                 <input type="radio" name="platform_type" id="current" value="established" onclick="showPlatforms();"> a previous egg </input>
-                <span id="platform_chosen"></span>
                 <input type="hidden"  name="platform_uid" id="platform_uid" /><br>
-                 Name: <input type="text" name="name" id="eggname"/><br>
-                 <div id="platforms">
+                 Name: <input type="text" name="name" id="name"/><br>
+                Group: <input type="text" name="group" id="group"/><br>
+                Notes: <input type="text" name="description" /><br><br>
+                </div>
+                <div id="platforms" class="right">
                     Search listed eggs: <input class="search" />
-                    <br>
                     <ul class="list">
                         <li class="removeable"> 
                             <span class="name">Getting all eggs - hold on tight!</span>
                         </li>
                     </ul>
-                </div><br>
-
-                Group: <input type="text" name="group" id="group"/><br>
-                Notes: <input type="text" name="note" /><br><br>
-                
+                </div>
+                <div class="clear"></div>
+                </div>
                 Location:
-              <div id="map-add"></div>
-              <label>Location Description:</label>
-              <p>
-              <input type="text" name="landmark.location" ng:model="landmark.location" placeholder="Example: Hicks and 9th Brooklyn NYC"/>
-              <button ng:click="locsearch()">Search</button>
-              </p>
+                <div id="map-add"></div>
+                <label>Location Description:</label>
+                <p>
+                    <input type="text" name="landmark.location" ng:model="landmark.location" placeholder="Example: Hicks and 9th Brooklyn NYC"/>
+                    <button ng:click="locsearch()">Search</button>
+                </p>
 
                 <br><br>
 
-                CSV data file to upload: <input type="file" id="datafile" name="datafile" onchange="fileChosen(this);" /><br><br>
-                Description (optional): <input type="text" name="description" /><br><br>
-                <input class='submit' type="submit" value="Submit this CSV file" disabled="true" />
+                CSV data files to upload: <input type="file" id="datafiles" name="datafiles" multiple required onchange="filesChosen(this);" /><br><br>
+                <input type="submit" class="btn btn-default" value="Submit this data" />
+
             </form>
         </div>
            </div>
