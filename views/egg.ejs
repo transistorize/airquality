@@ -27,10 +27,17 @@
       </div>
     </div>
 
-    <h2><strong>Egg: <%= platformName %> </strong></h2>
-
+    <h3 class="title-text"><strong>Egg: <%= platformName %> </strong></h3>
+    <aside id="totals"><span id="active">-</span> of <span id="total">-</span> readings selected.</aside>
 
 <div id="charts">
+   <h4>Temperature & Humidity</h4>
+  <div id="temp-chart" class="chart">
+    <div class="title">Temperature, Average: <span id="tempavg"></span>°F </div> <br>
+  </div>
+  <div id="humidity-chart" class="chart">
+    <div class="title">Humidity, Average: <span id="humidavg"></span>% </div> <br>
+  </div>
   <h4>Carbon Monoxide (CO)</h4>
   <div id="COegg">
     <div class="title"></div>
@@ -51,20 +58,7 @@
   </div>
   <div id="date-chart" class="chart">
     <div class="title"></div>
-  </div> <br>
-  <h4>Temperature & Humidity</h4>
-  <div id="temp-chart" class="chart">
-    <div class="title">Temperature</div>
   </div>
-  <div id="humidity-chart" class="chart">
-    <div class="title">Humidity</div>
-  </div>
-</div>
-
-<aside id="totals"><span id="active">-</span> of <span id="total">-</span> readings selected.</aside>
-
-<div id="lists">
-  <div id="reading-list" class="list"></div>
 </div>
 
 </div>
@@ -150,6 +144,20 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
   var charts = [
 
     barChart()
+        .dimension(temperature)
+        .group(tempgroup)
+      .x(d3.scale.linear()
+        .domain([18, 40])
+        .rangeRound([0, 10 * 20])),
+
+    barChart()
+        .dimension(humidity)
+        .group(humidgroup)
+      .x(d3.scale.linear()
+        .domain([25, 85])
+        .rangeRound([0, 10 * 25])),
+
+    barChart()
         .dimension(CO)
         .group(COgroup)
       .x(d3.scale.linear()
@@ -171,20 +179,6 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
         .domain([525,850])
         .rangeRound([0, 20 * 21])),
 
-    barChart()
-        .dimension(temperature)
-        .group(tempgroup)
-      .x(d3.scale.linear()
-        .domain([18, 40])
-        .rangeRound([0, 10 * 20])),
-
-    barChart()
-        .dimension(humidity)
-        .group(humidgroup)
-      .x(d3.scale.linear()
-        .domain([25, 85])
-        .rangeRound([0, 10 * 25])),
-
   ];
 
   // Given our array of charts, which we assume are in the same order as the
@@ -201,6 +195,16 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
   // Render the total.
   d3.selectAll("#total")
       .text(formatNumber(reading.size()));
+
+  // Render the avg temp.
+  d3.selectAll("#tempavg")
+      .data([avgTempF])
+      .text((function(d) { return Math.round(d,1); }));
+
+ // Render the avg humidity.
+  d3.selectAll("#humidavg")
+      .data([avgHumidity])
+      .text((function(d) { return Math.round(d,1); }));
 
     var eggWidth = 150,
     eggHeight = 150;
@@ -219,39 +223,14 @@ egg1.append('ellipse')
     .attr('cy', eggHeight/2)
     .attr('rx', function(d) { return d/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return d/(Math.sqrt(d)*4/5)*2; })
-    .style('fill', "#00daff" );
-
+    .style('fill', "#ffa500" );
 
 egg1.append("text")
-        .attr("x", eggWidth/2)
-        .attr("y", 50)
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .style("font-weight", "bold")
-        .text(function(d) { return "Averages"; });
-
-    egg1.append("text")
       .attr("x", eggWidth/2)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "CO: " + Math.round(d, 1); });
-
-    egg1.append("text")
-      .data([avgTempF])
-      .attr("x", eggWidth/2)
-      .attr("y", 90)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Temp: " + Math.round(d, 1); });
-
-    egg1.append("text")
-      .data([avgHumidity])
-      .attr("x", eggWidth/2)
-      .attr("y", 110)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Humidity: " + Math.round(d,1); });
 
 
 var egg2 = d3.select('#NO2egg').selectAll('svg')
@@ -266,38 +245,14 @@ egg2.append('ellipse')
     .attr('cy', eggHeight/2)
     .attr('rx', function(d) { return d/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return d/(Math.sqrt(d)*4/5)*2; })
-    .style('fill', "#00daff" );
+    .style('fill', "#00ffa5" );
 
 egg2.append("text")
-        .attr("x", eggWidth/2)
-        .attr("y", 50)
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .style("font-weight", "bold")
-        .text(function(d) { return "Averages"; });
-
-    egg2.append("text")
       .attr("x", eggWidth/2)
       .attr("y", 70)
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return "NO2: " + Math.round(d, 1); });
-
-    egg2.append("text")
-      .data([avgTempF])
-      .attr("x", eggWidth/2)
-      .attr("y", 90)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Temp: " + Math.round(d, 1); });
-
-    egg2.append("text")
-      .data([avgHumidity])
-      .attr("x", eggWidth/2)
-      .attr("y", 110)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Humidity: " + Math.round(d,1); });
 
 var egg3 = d3.select('#VOCegg').selectAll('svg')
     .data([avgVOC])
@@ -311,15 +266,7 @@ egg3.append('ellipse')
     .attr('cy', eggHeight/2)
     .attr('rx', function(d) { return Math.abs(d)/Math.sqrt(d)*2; })
     .attr('ry', function(d) { return Math.abs(d)/(Math.sqrt(d)*4/5)*2; })
-    .style('fill', "#00daff" );
-
-    egg3.append("text")
-        .attr("x", eggWidth/2)
-        .attr("y", 50)
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .style("font-weight", "bold")
-        .text(function(d) { return "Averages"; });
+    .style('fill', "#ff005a" );
 
     egg3.append("text")
       .attr("x", eggWidth/2)
@@ -328,21 +275,6 @@ egg3.append('ellipse')
       .style("text-anchor", "middle")
       .text(function(d) { return "VOC: " + Math.round(d, 1); });
 
-    egg3.append("text")
-      .data([avgTempF])
-      .attr("x", eggWidth/2)
-      .attr("y", 90)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Temp: " + Math.round(d, 1); });
-
-    egg3.append("text")
-      .data([avgHumidity])
-      .attr("x", eggWidth/2)
-      .attr("y", 110)
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return "Humidity: " + Math.round(d,1); });
 
 renderAll();
 

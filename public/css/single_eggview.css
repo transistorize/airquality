@@ -12,7 +12,7 @@
 .reset {
   padding-left: 1em;
   font-size: smaller;
-  color: #ccc;
+  color: #00daff;
 }
 
 .background.bar {
@@ -34,8 +34,8 @@
 }
 
 .brush rect.extent {
-  fill: #00daff;
-  fill-opacity: .125;
+  fill: #ccc;
+  fill-opacity: .40;
 }
 
 .brush .resize path {
@@ -46,6 +46,16 @@
 #COegg, #NO2egg, #VOCegg{
   display: inline-block;
   width:200px;
+}
+
+#delay-chart .foreground.bar{
+  fill: #ffa500;
+}
+#distance-chart .foreground.bar{
+  fill: #00ffa5;
+}
+#date-chart .foreground.bar{
+  fill: #ff005a;
 }
 
 #reading-list {

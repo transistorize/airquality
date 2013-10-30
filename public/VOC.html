@@ -91,7 +91,6 @@ var eggs = [];
 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 
 
-
     function renderLineChart (egg) {
 
         var x = d3.time.scale()
@@ -149,9 +148,18 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
 		group.append("path")
 			.datum(egg.allData)
 			.attr("class", "line")
-			.attr("d", line);
+			.attr("d", line)
+      .attr("fill", "#000")
+      .on("mouseover", mMove)
+      .append("title");
     }
 
+    function mMove(){
+
+       var m = d3.mouse(this);
+      d3.select("#path").select("title").text(m[1]);
+      console.log(m[1]);
+    }
 
     function processAndRender (response) {
 
