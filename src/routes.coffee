@@ -66,6 +66,7 @@ class Routes
                     request.body.platform_id = platform.id
                     @postDataByUid request, response
                 else 
+                    console.error err
                     response.status(500).send status: 'rejected', error: 'could not create record for egg'
         else
             @postDataByUid request, response
