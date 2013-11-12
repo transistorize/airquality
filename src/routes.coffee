@@ -6,6 +6,7 @@
 
 config = require 'config'
 _ = require 'underscore'
+ChangeRequest = require './cr'
 
 class Routes
 
@@ -37,15 +38,13 @@ class Routes
                 if !err
                     response.send status: 'ok', platforms: [ platform ]
                 else
+                    console.err err
                     response.status(500).send status: 'rejected', error: err
         else
             reponse.status(400).send status: 'rejected', error: 'body had insufficient content, bad request'
                    
     # POST '/upload/:type', processor.postForm
     postForm:  (request, response) =>
-        console.log 'file type =', request.params.type, ', platform type =', request.body.platform_type, 
-            ', uid =', request.body.platform_uid, ', name=', request.body.name,  '\ndata_present=', (request.files != null)
-   
         if request.params.type is 'test'
             return response.json [request.body, request.files]
         
@@ -57,30 +56,62 @@ class Routes
 
         if !request.body.name and !request.body.platform_uid
             return response.status(400).send status: 'rejected', error: 'name not provided'
-       
+        
         if !request.body.platform_uid and request.body.name
             body = {name: request.body.name}
             @storage.createPlatform body, (err, platform) =>
                 if !err 
+                    console.log 'found', platform
                     request.body.platform_uid = platform.uid
                     request.body.platform_id = platform.id
-                    @postDataByUid request, response
+                    @updatePlatformByUid request, response
                 else 
                     console.error err
                     response.status(500).send status: 'rejected', error: 'could not create record for egg'
         else
-            @postDataByUid request, response
+            @updatePlatformByUid request, response
     
-    postDataByUid: (request, response) =>   
-        # TODO better arg checking    
-        # TODO create new platform if it does not exist 
-        if request.files?.datafiles and request.body?.platform_uid
+    updatePlatformByUid: (request, response) =>   
+        console.log 'entered updatePlatformByUid'
+
+        if request.body?.platform_uid
+            b = request.body
+            cr = new ChangeRequest(b.platform_uid)
             
+            cr.changeAttr('meta.group', b.group) if b.group
+            cr.changeAttr('name', b.name) if b.name
+            cr.changeAttr('description', b.description) if b.description
+            
+            console.log 'parsing=', b.platform_loc
+            try 
+                if b.platform_loc 
+                    coords = JSON.parse(b.platform_loc)
+                    if not _.isNaN(coords[0]) and not _.isNaN(coords[1])
+                        cr.changeAttr('lat', coords[0])
+                        cr.changeAttr('lng', coords[1])
+            catch e
+                console.error e
+
+            console.log 'changes: ', JSON.stringify(cr.getChanges())
+
+            @storage.updatePlatform cr, (err, result) =>
+                if !err
+                    @importData request, response
+                else
+                    console.error err
+                    response.status(500).send status: 'rejected', error: 'data could not be updated'
+        else
+            response.status(400).send status: 'reject', error: 'no uid, bad request'
+
+    importData: (request, response) =>
+        if request.files?.datafiles and request.body?.platform_uid
             if _.isObject(request.files?.datafiles) and _.has(request.files?.datafiles, 'name') 
                 meta = [ request.files.datafiles ] 
             else
                 meta = request.files.datafiles
-                        
+            
+            meta = meta.filter (f) -> f.size > 0
+
             @storage.bulkCSVImport request.body.platform_uid, meta, (err, result) => 
                 console.log 'return from import', err, result
                 if !err
@@ -88,6 +119,8 @@ class Routes
                 else
                     console.error err
                     response.status(500).send status: 'rejected', error: 'transformation failed'
+        else if request.body?.platform_uid
+            response.redirect('eggsitting/p/' + request.body.platform_uid)
         else
             response.status(400).send status: 'rejected', error: 'no uid, bad request'
        

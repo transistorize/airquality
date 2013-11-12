@@ -5,21 +5,31 @@
 
 "use strict"
 
+_ = require "underscore"
+
 class ChangeRequest
         
     constructor: (@uuid)  ->
         @changes = {}
+    
+    hasAttr: (attribute) ->
+        return _.has(@changes['__attr'], attribute)
 
     changeAttr: (attribute, value) ->
         throw new Error 'empty value' if !value
         checkNameOf attribute
-        @changes[attribute] = value
-
-    deleteAttr: (attribute) ->
-        stdCheck attribute
-        delete @changes[attribute] if @changes[attribute]
-        @changes['__deletes'][attribute] = '__del__'
+        @changes['__attr'][attribute] = value
     
+    #not all backends may respect this
+    deleteAttr: (attribute) ->
+        checkNameOf attribute
+        delete @changes['__attr'][attribute]
+        delete @changes['__seq'][attribute]
+        @changes['__del'][attribute] = '__del__'
+    
+    hasSeq: (attribute) ->
+        return _.has(@changes['__seq'], attribute)
+
     createSeq: (attribute, schema) ->
         throw new Error 'empty schema' if !schema
         checkNameOf attribute
@@ -35,10 +45,25 @@ class ChangeRequest
         checkNameOf attribute
         @changes['__deletes'][attribute] = '__deleted__'
 
-    checkNameOf = (attribute) ->
-        throw new Error 'empty change or deletion attribute' if !attribute
-        throw new Error 'illegal attribute name' if attribute == '__deletes' or attribute == '__seq'
+    getChanges: () ->
+        #shallow copy only
+        return _.clone(@changes['__attr'])
 
+    getDeletions: () ->
+        #shallow copy only
+        return _.clone(@changes['__del'])
+
+    getSequences: () ->
+        #shallow copy only
+        return _.clone(@changes['__seq'])
+
+    getSchemas: () ->
+        #shallow copy only
+        return _.cone(@changes['__seq_schema'])
+
+
+    checkNameOf = (attribute) ->
+        throw new Error 'undefined attribute name not allowed' if !attribute
 
 module.exports = ChangeRequest
 

@@ -82,6 +82,20 @@ class Storage
                 cb null, result.rows or []
             else
                 cb 'error querying for platform by id=' + id
+    
+    # modifies the platform data
+    updatePlatform: (cr, cb) ->
+        throw new Error 'invalid arguments' if !cb or !cr
+        return cb null, 'not supported'
+        changeitems = cr.getChanges()
+        return cb null, 'empty changes' if _.isEmpty(changeItems)
+
+        # translate major columns 
+        #changeitems
+        # translate metal columns
+        # translate deletions
+        #query 'update dim.platform set where uid = $1'
+
 
     ## TODO cache uid -> data table mapping
     ## TODO data tables should reflect schema set by needs of specific platform, 
@@ -134,6 +148,8 @@ class Storage
         throw new Error 'invalid arguments' if !cb or !uid or !fileList
         schema = ['ts','temp_degc','humidity','no2_raw','no2','co_raw','co','voc_raw','voc']        
         
+        return cb(null, 'nothing to import') if _.isEmpty(fileList)
+                   
         # imports the data into the temp extraction table, based on the template table
         copyFrom uid, fileList, 'extract.sensor_data', schema, cb                    
  

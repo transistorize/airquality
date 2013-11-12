@@ -3,7 +3,7 @@
   <head>
     <title>Egg Sitting: Add an Egg</title>
     <meta charset="utf-8">
-    <meta name="description" content="kinisi data platform">
+    <meta name="description" content="data platform">
 
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/aqeeggs.css" rel="stylesheet" media="screen">
@@ -22,16 +22,83 @@
     <script src="js/list.min.js" charset="utf-8"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <style type="text/css"> @import url(http://fonts.googleapis.com/css?family=Coming+Soon|Bubbler+One); </style>
+
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="index.html">Egg Sitting</a></li>
+              <li><a href="index.html#map">All Eggs</a></li>
+              <li><a href="CO.html">Carbon Monoxide (C0)</a></li>
+              <li><a href="NO2.html">Nitrogen Dioxide (NO2)</a></li>
+              <li><a href="VOC.html">Volatile Organic Compounds (VOC)</a></li>
+              <li><a href="form.html">Add An Egg</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="content-wrapper">
+    <p class="title-text">Add or Update an Egg</p>
+        <div>
+            <form method="POST" enctype="multipart/form-data" action="upload/csv" accept-charset="UTF-8"> I want to add data to: 
+                <div class="parent">
+                <div class="left">
+                <input type="radio" name="platform_type" id="new" value="new" checked="checked" onclick="clearSelections();"> a new egg </input>
+                <input type="radio" name="platform_type" id="current" value="established" onclick="showPlatforms();"> a previous egg </input>
+                <input type="hidden" name="platform_uid" id="platform_uid" />
+                <input type="hidden" name="platform_loc" id="platform_loc" />
+                <br>
+                Name: <input type="text" name="name" id="name"/><br>
+                Group: <input type="text" name="group" id="group"/><br>
+                Notes: <input type="text" name="description" /><br><br>
+                </div>
+                <div id="platforms" class="right">
+                    Search listed eggs: <input class="search" />
+                    <ul class="list">
+                        <li class="removable">
+                            <span class="name">Getting all eggs - hold on tight!</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+                </div>
+                Location:
+                <div id="map-add"></div>
+                <label>Location Description:</label>
+                <p>
+                    <input type="text" name="landmark.location" ng:model="landmark.location" placeholder="Example: Hicks and 9th Brooklyn NYC"/>
+                    <button ng:click="locsearch()">Search</button>
+                </p>
+
+                <br><br>
+
+                CSV data files to upload: <input type="file" id="datafiles" name="datafiles" onchange="filesChosen(this);" /><br><br>
+                <input id="submit" type="submit" class="btn btn-default" value="Submit this data" disabled="true" />
+
+            </form>
+        </div>
+           </div>
+  </body>
+
     <script type="text/javascript">
     
-        // todo make this pick-list pageable
+        var form = {
+            map: null,
+            marker: null
+        };
 
+        // todo make this pick-list pageable
         function renderResponse(err, response) {
             var options = { valueNames: ['name', 'created', 'description'] }, 
                 format = d3.time.format("created @ %Y-%m-%d %I:%m %p");
 
             // remove stand-ins
-            d3.selectAll('.removeable').remove();
+            d3.selectAll('.removable').remove();
             if (!response) {
                 return;
             }
@@ -71,6 +138,11 @@
             d3.select('#platform_uid').property('value', platform.uid);
             d3.select('#name').property('value', platform.name);
             d3.select('#description').property('value', platform.description);
+            if (platform.lat && platform.lng) {
+                updateMarker(new L.LatLng(platform.lat, platform.lng));
+            } else {
+                updateMarker();
+            }
             updateSubmitBtnState();
         }
 
@@ -79,108 +151,74 @@
             d3.selectAll('li.chosen').classed('chosen', false);
             d3.select('#platform_uid').property('value', null);
             d3.select('#name').property('value', null); 
-            d3.select('#description').property('value', null);
+            d3.select('#description').property('value', null);          
             updateSubmitBtnState();
         }
 
         function filesChosen(input) {
-            console.log(input.files);
             updateSubmitBtnState(input.value);
         }
 
         function updateSubmitBtnState(uploadFileNames) {
-            var datafileInput = uploadFileNames || d3.select('input#datafiles').property('value');
-            var uid = d3.select('input#platform_uid').property('value');
-            var isANewPlatform = d3.select('input#new').property('checked');
+            var datafileInput = uploadFileNames || d3.select('input#datafiles').property('value'),
+                uid = d3.select('input#platform_uid').property('value'),
+                isNewPlatform = d3.select('input#new').property('checked');
 
-            if ((datafileInput !== undefined && datafileInput !== '' ) && (isANewPlatform || ( uid !== undefined && uid !== ''))) {
-                d3.select('input.submit').attr('disabled', null);
+            if ((datafileInput !== undefined && datafileInput !== '') || uid !== undefined) {
+                d3.select('input#submit').attr('disabled', null);
             } else {
-                d3.select('input.submit').attr('disabled', 'true');
+                d3.select('input#submit').attr('disabled', 'true');
             }
         }
 
         function submit(input) {
-            console.log (d3.select("#datafiles"));
-
-            //d3.xhr('/upload/test')    
-
+            console.log(d3.select("#datafiles"));
+            //d3.xhr('/upload/test')
         }
 
-     
-    </script>
+        function updateMarker(latlng) {
+            if (!latlng) {
+                if (form.marker) {
+                    form.map.removeLayer(form.marker);
+                    form.marker = null;
+                }
+                return;
+            }
 
-  </head>
-  <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="index.html">Egg Sitting</a></li>
-              <li><a href="index.html#map">All Eggs</a></li>
-              <li><a href="CO.html">Carbon Monoxide (C0)</a></li>
-              <li><a href="NO2.html">Nitrogen Dioxide (NO2)</a></li>
-              <li><a href="VOC.html">Volatile Organic Compounds (VOC)</a></li>
-              <li><a href="form.html">Add An Egg</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br>
-    <div class="content-wrapper">
-    <p class="title-text">Add or Update an Egg</p>
-        <div>
-            <form method="POST" enctype="multipart/form-data" action="upload/csv" accept-charset="UTF-8"> I want to add data to: 
-                <div class="parent">
-                <div class="left">
-                <input type="radio" name="platform_type" id="new" value="new" checked="checked" onclick="clearSelections();"> a new egg </input>
-                <input type="radio" name="platform_type" id="current" value="established" onclick="showPlatforms();"> a previous egg </input>
-                <input type="hidden"  name="platform_uid" id="platform_uid" /><br>
-                 Name: <input type="text" name="name" id="name"/><br>
-                Group: <input type="text" name="group" id="group"/><br>
-                Notes: <input type="text" name="description" /><br><br>
-                </div>
-                <div id="platforms" class="right">
-                    Search listed eggs: <input class="search" />
-                    <ul class="list">
-                        <li class="removeable"> 
-                            <span class="name">Getting all eggs - hold on tight!</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="clear"></div>
-                </div>
-                Location:
-                <div id="map-add"></div>
-                <label>Location Description:</label>
-                <p>
-                    <input type="text" name="landmark.location" ng:model="landmark.location" placeholder="Example: Hicks and 9th Brooklyn NYC"/>
-                    <button ng:click="locsearch()">Search</button>
-                </p>
+            if (form.marker) {
+                form.marker.closePopup();
+                form.marker.setLatLng(latlng);
+                form.marker.update();
+            } else {
+                form.marker = L.marker(latlng).addTo(form.map);
+            }
 
-                <br><br>
+            form.marker.bindPopup(
+                ['Latitude:', latlng.lat.toFixed(3), '<br>Longitude:', latlng.lng.toFixed(3)].join(' ')
+                ).openPopup();
+            d3.select("#platform_loc").property('value', JSON.stringify(latlng));
+        }
 
-                CSV data files to upload: <input type="file" id="datafiles" name="datafiles" multiple required onchange="filesChosen(this);" /><br><br>
-                <input type="submit" class="btn btn-default" value="Submit this data" />
+        function onMapClick(e) {
+            updateMarker(e.latlng);
+        }
 
-            </form>
-        </div>
-           </div>
-  </body>
+        function init() {
+            var center = new L.LatLng(40.677188, -73.886196);
+            form.map = L.map('map-add').setView(center, 15);
+            
+            L.tileLayer('http://{s}.tile.cloudmade.com/9b49118a2a5a494889d7b0bd5cbfbaf2/997/256/{z}/{x}/{y}.png', {
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> ' +
+                    'contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                    'Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+                maxZoom: 18 }).addTo(form.map);
+            
+            form.map.on('click', onMapClick);
+        }
 
-   <script type="text/javascript">
+        init();
 
-
-    var map = L.map('map-add').setView([40.677188,-73.886196], 15);
-
-    L.tileLayer('http://{s}.tile.cloudmade.com/9b49118a2a5a494889d7b0bd5cbfbaf2/997/256/{z}/{x}/{y}.png', {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-      maxZoom: 18 }).addTo(map);
-
-
-    </script>
+      </script>
   
 </html>
 

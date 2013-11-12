@@ -5,3 +5,5 @@ config/runtime.json
 *.swp
 dist/*
 nosave/*
+.idea
+*.iml

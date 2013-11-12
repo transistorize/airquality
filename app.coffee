@@ -13,10 +13,9 @@ Routes  = require './src/routes'
 Views   = require './src/viewroutes'
 
 
-process.on 'exit', () ->
-    console.log 'Goodbye!'
-
 app = express()
+# data layer
+storage = new Storage()
 port = process.argv[2] || config.WebService.port
 
 #CORS middleware
@@ -47,15 +46,7 @@ app.configure () ->
     # app.use express.directory('public')
     app.use express.static('public')
 
-    # non-static routes
-    storage = new Storage()
-    process.on 'uncaughtException', (err) ->
-        console.log 'Caught exception:', err
-        storage.exit()
-    process.on 'exit', () ->
-        storage.exit()
-
-
+    # Attach routes and views
     new Routes(app, storage)
     new Views(app, storage)
 
@@ -64,8 +55,39 @@ app.configure () ->
 app.configure 'development', () ->
     console.log 'configure development'
     app.use express.logger('dev')
-        
+
+closeApp = () ->
+    try
+        console.log 'App shutting down ...'
+        storage.exit();
+        console.log 'Goodbye!'
+    catch e
+        console.error e
+
 
 console.log 'listening via HTTP on', port
-app.listen port
+server = app.listen port
+
+closeServer = () ->
+    try
+        server.close()
+    catch e
+        console.error 'server close called again'
+        return
+
+server.on 'close', closeApp
+
+process.on 'SIGINT', () ->
+    console.log '\ncaught SIGINT - shutting down'
+    closeServer()
+
+process.on 'SIGTERM', () ->
+    console.log '\ncaught SIGTERM - shutting down'
+    closeServer()
+
+process.on 'uncaughtException', (err) ->
+    console.log '\ncaught exception:', err
+    closeServer()
+
+console.log 'all handlers attached - startup complete'
 
