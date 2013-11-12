@@ -61,7 +61,7 @@ class Routes
             body = {name: request.body.name}
             @storage.createPlatform body, (err, platform) =>
                 if !err 
-                    console.log 'found', platform
+                    console.log 'create returned', platform
                     request.body.platform_uid = platform.uid
                     request.body.platform_id = platform.id
                     @updatePlatformByUid request, response

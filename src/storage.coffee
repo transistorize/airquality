@@ -307,18 +307,18 @@ class Storage
                 tempTable = 'platform_' + platformId
                 client.query 'create temp table ' + tempTable + ' (like ' + template + ');', [], (err, result) ->
                     return cb 'cannot create temporary space for copying data: ' + err if err
-                    console.log 'table creation result', result
+                    console.log 'table creation result: ', result
                     seriesCopy client, tempTable, fileList.slice(), (err, result) ->
                         console.log 'completed copy, ready for transformation', err, result
                         client.query 'drop table staging.sensor_data;', [], (err, result) ->
                             return cb err if err
-                            console.log 'drop table successful'
+                            console.log 'drop table successful: ', result
                             client.query """with transformed as (
                                 select
                                 ts::timestamp with time zone,
                                 -- change the platform_id to match it up with 
                                 -- the correct platform
-                                $1::int,
+                                $1::int as platform_id,
                                 temp_degc::numeric, 
                                 humidity::numeric, 
                                 no2_raw::numeric, 
@@ -335,7 +335,7 @@ class Storage
                                     return cb err if err
                                     console.log "post-transform", result
                                     client.query """insert into fact.sensor_data (
-                                        ts, platform_id,temp_degc, humidity, no2_raw, no2, co_raw, co, voc_raw, voc) 
+                                        ts, platform_id, temp_degc, humidity, no2_raw, no2, co_raw, co, voc_raw, voc) 
                                         select * from staging.sensor_data;""", [], (err, result) ->
                                             cb err, result
 
