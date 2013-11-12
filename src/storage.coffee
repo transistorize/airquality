@@ -86,7 +86,10 @@ class Storage
     # modifies the platform data
     updatePlatform: (cr, cb) ->
         throw new Error 'invalid arguments' if !cb or !cr
+        
+        #temp
         return cb null, 'not supported'
+
         changeitems = cr.getChanges()
         return cb null, 'empty changes' if _.isEmpty(changeItems)
 
@@ -199,7 +202,7 @@ class Storage
                 done()
             
 
-    # private method: wrapper method for begining and ending a transaction
+    # private method: wrapper method for beginning and ending a transaction
     withTransaction = (innerExecution, postHook) ->
         pg.connect config.Postgres.connection, (err, client, done) =>
             if err

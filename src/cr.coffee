@@ -10,7 +10,7 @@ _ = require "underscore"
 class ChangeRequest
         
     constructor: (@uuid)  ->
-        @changes = {}
+        @changes = { __attr: {}, __del: {}, __seq:{}, __seq_schema:{} }
     
     hasAttr: (attribute) ->
         return _.has(@changes['__attr'], attribute)
@@ -43,7 +43,7 @@ class ChangeRequest
 
     deleteSeq: (attribute) ->
         checkNameOf attribute
-        @changes['__deletes'][attribute] = '__deleted__'
+        @changes['__del'][attribute] = '__deleted__'
 
     getChanges: () ->
         #shallow copy only
