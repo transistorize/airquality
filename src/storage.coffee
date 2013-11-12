@@ -182,17 +182,22 @@ class Storage
         throw new Error 'callback required' if !cb
         console.log 'query:', statement, ', ', parameters?.length, ' parameter(s)'
         pg.connect config.Postgres.connection, (err, client, done) =>
-            if !err
-                client.query statement, parameters, (err, result) ->
+            try 
+                if !err
+                    client.query statement, parameters, (err, result) ->
+                        done()
+                        try
+                            if err then console.error err
+                            cb err, result
+                        catch exp
+                            console.error exp
+                else
+                    console.error 'error with query', err
                     done()
-                    try
-                        if err then console.error err
-                        cb err, result
-                    catch exp
-                        console.error exp
-            else
-                console.error 'error with query', err
-                cb err
+                    cb err
+            catch connExp
+                done()
+            
 
     # private method: wrapper method for begining and ending a transaction
     withTransaction = (innerExecution, postHook) ->
