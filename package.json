@@ -14,14 +14,14 @@
   },
   "dependencies": {
     "config": "0.4.x",
-    "express": "3.3.x",
+    "express": "3.4.x",
     "csv2json": "*",
     "event-stream" : "3.0.x",
     "ejs": "0.8.x",
     "coffee-script": "1.6.x",
-    "pg": "2.3.x",
-    "getmac": "*",
-    "underscore": "*"
+    "pg": "2.8.x",
+    "getmac": "1.0.x",
+    "underscore": "1.5.x"
   },
   "devDependencies": {
     "jasmine-node": "1.11.x"

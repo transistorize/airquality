@@ -243,7 +243,7 @@ class Storage
         
         copyCSVFile = (client, table, file, cb) ->
             # some flags to ensure callbacks aren't called multiple times
-            isCallbackCalled = false
+            callbackCalled = false
             errorRecv = null
             
             # open the sink stream
@@ -260,6 +260,7 @@ class Storage
                 console.error 'error from write stream:', errorRecv, 'uid=' + uid
                 if !callbackCalled
                     callbackCalled = true
+                    console.error 'calling wstream error callback', 'uid=' + uid
                     cb error
            
             # open the source stream
@@ -271,6 +272,7 @@ class Storage
                 wstream.end()
                 if !callbackCalled
                     callbackCalled = true
+                    console.error 'calling rstream error callback', 'uid=' + uid
                     cb error
             
             rstream.on 'close', () -> 
