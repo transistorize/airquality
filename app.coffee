@@ -77,10 +77,6 @@ closeServer = () ->
 
 server.on 'close', closeApp
 
-process.on 'SIGINT', () ->
-    console.log '\ncaught SIGINT - shutting down'
-    closeServer()
-
 process.on 'SIGTERM', () ->
     console.log '\ncaught SIGTERM - shutting down'
     closeServer()

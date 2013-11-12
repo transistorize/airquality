@@ -241,6 +241,7 @@ class Storage
     # private method: copy a csv text file from the local filesystem into a temporary table of the db
     copyFrom = (uid, fileList, template, copySchema, topLevelCb) ->
         
+        # copy a single file into the db
         copyCSVFile = (client, table, file, cb) ->
             # some flags to ensure callbacks aren't called multiple times
             callbackCalled = false
@@ -248,18 +249,16 @@ class Storage
             
             # open the sink stream
             wstream = client.copyFrom 'copy ' + table + ' (' + copySchema.join(',') + ') from stdin with csv;'
+                        
+            wstream.on 'pipe', (src) ->
+                console.log 'piping into the writer'
             
-            wstream.on 'finish', () -> 
-                console.log 'write stream finished for uid=' + uid
-                if !errorRecv && !isCallbackCalled
-                    callbackCalled = true
-                    cb null, file
-
             wstream.on 'error', (error) -> 
                 errorRecv = error
                 console.error 'error from write stream:', errorRecv, 'uid=' + uid
                 if !callbackCalled
                     callbackCalled = true
+                    rstream.end()
                     console.error 'calling wstream error callback', 'uid=' + uid
                     cb error
            
@@ -269,55 +268,61 @@ class Storage
             rstream.on 'error', (error) -> 
                 errorRecv = error
                 console.error 'error from read stream:', error, 'uid=' + uid
-                wstream.end()
                 if !callbackCalled
                     callbackCalled = true
+                    wstream.end()
                     console.error 'calling rstream error callback', 'uid=' + uid
                     cb error
             
             rstream.on 'close', () -> 
                 console.log 'read stream closed for', file.path, 'uid=' + uid
-                #wstream.end()   #just in case
-                if !errorRecv && !isCallbackCalled
+                wstream.end()
+                if !errorRecv && !callbackCalled
                     callbackCalled = true
                     cb null, file
-             
-            rstream.on 'data', (chunk) -> console.log 'rstream chunk length=', chunk.length
 
-            rstream.pipe wstream, true #end write stream when read stream ends
+            #rstream.on 'data', (chunk) -> console.log 'rstream chunk length=', chunk.length
+            rstream.pipe wstream, {end: false} # end write stream when read stream ends
         
+
+        # copy several files, one by one, into the db
         seriesCopy = (client, table, fileList, finalCb) ->
             return finalCb null, 'success' if _.isEmpty(fileList)
             
             head = _.first(fileList)
-            console.log 'Processing import file:', head.name
+            console.log 'Processing file:', head.name
             
             copyCSVFile client, table, head, (err, response) =>
                 # fail fast
                 return finalCb err if err
                 # move on to the next item in the list
                 seriesCopy client, table, _.rest(fileList), finalCb
-            
+         
 
+        # TODO cleanup
         copyToTempTable = (client, cb) ->
-            client.query 'select id from dim.platform where uid = $1::uuid limit 1;', [uid], (err, result) ->
-                return cb err if err
-                console.log result
-                return cb 'bad UUID' if result.rows.length is 0
-
-                platformId = result.rows[0].id
+            client.query 'select id from dim.platform where uid = $1::uuid limit 1;', [uid], (err, result1) ->
+                return cb 'bad UUID: ' + err if err or !result1 or result1?.rows.length is 0
+                console.log 'found UUID: rowcount =', result1.rowCount
+                
+                # create the temporary extraction table for the CSV import
+                platformId = result1.rows[0].id
                 tempTable = 'platform_' + platformId
-                client.query 'create table ' + tempTable + ' (like ' + template + ');', [], (err, result) ->
+                client.query 'create temp table ' + tempTable + ' (like ' + template + ');', [], (err, result2) ->
                     return cb 'cannot create temporary space for copying data: ' + err if err
-                    console.log 'table creation result: ', result
+                    console.log 'table creation result: ', result2 isnt undefined
 
-                    #multiple file copy
-                    seriesCopy client, tempTable, fileList.slice(), (err, result) ->
-                        console.log 'completed copy, ready for transformation', err, result
+                    # multiple file copy from CSV
+                    seriesCopy client, tempTable, fileList.slice(), (err, result3) ->
+                        return cb 'copy failed with ' + err if err
+                        console.log 'completed copy, ready for transformation: ', result3 is 'success'
                         
-                        client.query 'drop table staging.sensor_data;', [], (err, result) ->
-                            return cb err if err
-                            console.log 'drop table successful: ', result
+                        # drop the staging table
+                        client.query 'drop table staging.sensor_data;', [], (err, result4) ->
+                            return cb 'drop table failed with ' + err if err
+                            console.log 'drop table successful: ', result4 isnt undefined
+                            
+                            # transform extracted data to staging format, assign platform id
                             client.query """with transformed as (
                                 select
                                 ts::timestamp with time zone,
@@ -332,18 +337,20 @@ class Storage
                                 co::numeric,
                                 voc_raw::numeric,
                                 voc::numeric
-                                from """ + tempTable +
-                                """ where ts is not null)
+                                from """ + tempTable + """ where ts is not null)
                                 select *
                                 into staging.sensor_data
-                                from transformed ;""", [platformId], (err, result) -> 
+                                from transformed ;""", [platformId], (err, result5) -> 
                                     return cb err if err
-                                    console.log 'post-transform: ', result
+                                    console.log 'post-transform: rowcount =', result5.rowCount
                         
+                                    # insert final data into the fact table
                                     client.query """insert into fact.sensor_data (
                                         ts, platform_id, temp_degc, humidity, no2_raw, no2, co_raw, co, voc_raw, voc) 
-                                        select * from staging.sensor_data;""", [], (err, result) ->
-                                            cb err, result
+                                        select * from staging.sensor_data;""", [], (err, result6) ->
+
+                                            #call end of transaction, handle rollback or commit there
+                                            cb err, result6
 
 
         # kick off the whole chain
