@@ -305,11 +305,14 @@ class Storage
 
                 platformId = result.rows[0].id
                 tempTable = 'platform_' + platformId
-                client.query 'create temp table ' + tempTable + ' (like ' + template + ');', [], (err, result) ->
+                client.query 'create table ' + tempTable + ' (like ' + template + ');', [], (err, result) ->
                     return cb 'cannot create temporary space for copying data: ' + err if err
                     console.log 'table creation result: ', result
+
+                    #multiple file copy
                     seriesCopy client, tempTable, fileList.slice(), (err, result) ->
                         console.log 'completed copy, ready for transformation', err, result
+                        
                         client.query 'drop table staging.sensor_data;', [], (err, result) ->
                             return cb err if err
                             console.log 'drop table successful: ', result
@@ -333,7 +336,8 @@ class Storage
                                 into staging.sensor_data
                                 from transformed ;""", [platformId], (err, result) -> 
                                     return cb err if err
-                                    console.log "post-transform", result
+                                    console.log 'post-transform: ', result
+                        
                                     client.query """insert into fact.sensor_data (
                                         ts, platform_id, temp_degc, humidity, no2_raw, no2, co_raw, co, voc_raw, voc) 
                                         select * from staging.sensor_data;""", [], (err, result) ->
