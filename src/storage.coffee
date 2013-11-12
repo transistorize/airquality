@@ -258,7 +258,6 @@ class Storage
                 console.error 'error from write stream:', errorRecv, 'uid=' + uid
                 if !callbackCalled
                     callbackCalled = true
-                    rstream.end()
                     console.error 'calling wstream error callback', 'uid=' + uid
                     cb error
            
