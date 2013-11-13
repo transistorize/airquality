@@ -85,7 +85,9 @@ d3.json("/eggsitting/eggs/", function (error, readings){
     console.log("number of eggs: " + eggs.length);
 
     for( var i =0; i< eggs.length; i++){
-      L.marker([i.lat, i.lng]).addTo(map);
+      var LatLng = new L.LatLng(i.lat, i.lng);
+
+      L.marker(LatLng).addTo(map);
     }
 
 });
