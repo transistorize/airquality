@@ -21,7 +21,7 @@
 }
 
 body{
-  font-family: 'Bubbler One', sans-serif;
+  font-family: 'Apercu Regular', sans-serif;
   background-color: #f6f6f6;
   padding: 0px 15% 10px 15%;
   font-size: 1.1em;
@@ -45,7 +45,7 @@ a:hover, a:focus{
 	padding-bottom: 15px;
   padding-left: 200px;
 	font-size: 2.7em;
-	font-family:'Coming Soon', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+	font-family:'Apercu Bold', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
 	margin-top: auto;
 	margin-bottom: auto;
 	color: black;
@@ -54,7 +54,7 @@ a:hover, a:focus{
 .subheader-text {
   padding-top: 10px;
   font-size: 1.2em;
-  font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
+  font-family:'Apercu Regular', sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
   line-height: 1.2em;
   margin-top: auto;
   margin-bottom: auto;
@@ -90,7 +90,7 @@ a:hover, a:focus{
 .title-text {
   margin-top: 40px;
   margin-bottom: 15px;
-  font-family:'Coming Soon', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+  font-family:'Apercu Bold', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
   line-height: 40px;
   color: #000;
   text-rendering: optimizelegibility;
@@ -100,7 +100,7 @@ a:hover, a:focus{
 
 .subtitle-text {
   margin: 0 0;
-  font-family:'Bubbler One', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+  font-family:'Apercu Regular', sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
   line-height: 40px;
   color: #025ff1;
   text-rendering: optimizelegibility;
