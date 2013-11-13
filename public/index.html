@@ -92,9 +92,9 @@ d3.json("/eggsitting/eggs/", function (error, readings){
 
     for( var i =0; i< eggs.length; i++){
       var LatLng = new L.LatLng(eggs[i].lat, eggs[i].lng);
-      var url = "/eggsitting/p/" + eggs[i].uid;
+      var url = "http://ghostmap.mit.edu/eggsitting/p/" + eggs[i].uid;
       var popupcontent = L.popup()
-        .setContent('<p> Egg: ' + eggs[i].name + '<br>' + url + '</p>');
+        .setContent('<p> Egg: ' + eggs[i].name + '<br> <a href="' + url + '">egg data</a></p>');
 
       L.marker(LatLng, {icon: myIcon})
           .bindPopup(popupcontent)
