@@ -71,11 +71,11 @@ var egg = [];
 d3.json("/eggsitting/eggs/", function (error, readings){
   //if (error) return console.warn(error);
   console.log(readings);
-  
-  readings.data.map(function(d) {
+
+  readings.platforms.map(function(d) {
      egg.push({
       lat: d.lat,
-      lon: d.lon,
+      lng: d.lng,
       name: d.name
     });
   });
