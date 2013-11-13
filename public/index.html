@@ -69,6 +69,11 @@
 var eggs = [];
 var map = L.map('map-all').setView([40.677188,-73.886196], 15);
 
+var myIcon = L.icon({
+  iconURL: 'img/birdicon.png',
+  iconSize: [70,70]
+});
+
 d3.json("/eggsitting/eggs/", function (error, readings){
   //if (error) return console.warn(error);
   //console.log(readings);
@@ -87,7 +92,7 @@ d3.json("/eggsitting/eggs/", function (error, readings){
     for( var i =0; i< eggs.length; i++){
       var LatLng = new L.LatLng(eggs[i].lat, eggs[i].lng);
 
-      L.marker(LatLng).addTo(map);
+      L.marker(LatLng, {icon: myIcon}).addTo(map);
     }
 
 });
