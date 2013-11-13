@@ -82,6 +82,7 @@ d3.json("/eggsitting/eggs/", function (error, readings){
      eggs.push({
       lat: d.lat,
       lng: d.lng,
+      uid: d.uid,
       name: d.name
     });
   });
@@ -91,8 +92,13 @@ d3.json("/eggsitting/eggs/", function (error, readings){
 
     for( var i =0; i< eggs.length; i++){
       var LatLng = new L.LatLng(eggs[i].lat, eggs[i].lng);
+      var popupcontent = L.popup()
+        .setLatLng(LatLng)
+        .setContent('<p>This is a popup</p>')
+        .openOn(map);
 
       L.marker(LatLng, {icon: myIcon}).addTo(map);
+      marker.bindPopup(popupcontent).openPopup();
     }
 
 });
