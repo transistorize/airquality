@@ -93,12 +93,11 @@ d3.json("/eggsitting/eggs/", function (error, readings){
     for( var i =0; i< eggs.length; i++){
       var LatLng = new L.LatLng(eggs[i].lat, eggs[i].lng);
       var popupcontent = L.popup()
-        .setLatLng(LatLng)
-        .setContent('<p>This is a popup</p>')
-        .openOn(map);
+        .setContent('<p>This is a popup</p>');
 
-      L.marker(LatLng, {icon: myIcon}).addTo(map);
-      marker.bindPopup(popupcontent).openPopup();
+      L.marker(LatLng, {icon: myIcon})
+          .bindPopup(popupcontent)
+          .addTo(map);
     }
 
 });
