@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <style type="text/css"> @import url(http://fonts.googleapis.com/css?family=Coming+Soon|Bubbler+One); </style>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="js/d3.v3.min.js"></script>
   </head>
 
   <body>
@@ -65,8 +66,22 @@
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
 
+d3.json("/eggsitting/eggs/", function (error, readings){
+  //if (error) return console.warn(error);
+  //console.log(readings);
+  readings.data.map(function(d) {
+     egg.push({
+      lat: d.lat,
+      lon: d.lon,
+      name: d.name
+    });
+  });
+    console.log(egg);
+
 
     var map = L.map('map-all').setView([40.677188,-73.886196], 15);
+
+    //var data = 
 
     L.tileLayer('http://{s}.tile.cloudmade.com/9b49118a2a5a494889d7b0bd5cbfbaf2/997/256/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
