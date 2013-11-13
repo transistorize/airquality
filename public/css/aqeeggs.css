@@ -4,7 +4,7 @@
   background-repeat: no-repeat;
   background-image: none;
   border-color: #B0B6BD;
-  font-size: 1em;
+  /*font-size: 1em;*/
 }
 
 .navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus {
@@ -24,8 +24,8 @@ body{
   font-family: 'Apercu Regular', sans-serif;
   background-color: #f6f6f6;
   padding: 0px 15% 10px 15%;
-  font-size: 1.1em;
-  line-height: 1.15em;
+  /*font-size: 1.1em;
+  line-height: 1.15em;*/
 
 }
 
@@ -53,9 +53,9 @@ a:hover, a:focus{
 
 .subheader-text {
   padding-top: 10px;
-  font-size: 1.2em;
+  /*font-size: 1.2em;*/
   font-family:'Apercu Regular', sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
-  line-height: 1.2em;
+  /*line-height: 1.2em;*/
   margin-top: auto;
   margin-bottom: auto;
   color: #00c9c8;
@@ -78,7 +78,7 @@ a:hover, a:focus{
     padding-left: 15%;
     padding-right: 15%;
     padding-bottom: 35px;
-    font-size: 1.5em;
+    /*font-size: 1.5em;*/
     min-height: 300px;
     color: white;
     -webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
