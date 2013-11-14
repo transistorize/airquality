@@ -31,7 +31,10 @@
     <aside id="totals"><span id="active">-</span> of <span id="total">-</span> readings selected.</aside>
 
 <div id="charts">
-   <h4>Temperature & Humidity</h4>
+   <h4>Dates, Temperature & Humidity</h4>
+  <div id="time-chart" class="chart">
+    <div class="title">Dates</div> <br>
+  </div>
   <div id="temp-chart" class="chart">
     <div class="title">Temperature, Average: <span id="tempavg"></span>°F </div> <br>
   </div>
@@ -142,6 +145,13 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
 
 //charts
   var charts = [
+
+    barChart()
+        .dimension(date)
+        .group(dates)
+      .x(d3.scale.linear()
+        .domain([18, 40])
+        .rangeRound([0, 10 * 20])),
 
     barChart()
         .dimension(temperature)
