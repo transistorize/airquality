@@ -149,7 +149,9 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
     barChart()
         .dimension(date)
         .group(dates)
-      .x(d3.time.scale()),
+      .x(d3.time.scale()
+        .domain([dates])
+        .rangeRound([dates])),
 
     barChart()
         .dimension(temperature)
