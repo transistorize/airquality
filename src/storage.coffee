@@ -6,7 +6,7 @@
 
 config = require 'config'
 getmac = require 'getmac'
-pg     = require 'pg'
+pg     = require('pg').native
 fs     = require 'fs'
 _      = require 'underscore'
 
