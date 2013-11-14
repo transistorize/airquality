@@ -44,7 +44,7 @@
 	  stroke-width: 1.5px;
 	}
     </style>
-    <style type="text/css"> @import url(http://fonts.googleapis.com/css?family=Coming+Soon|Bubbler+One); </style>
+   <link rel="stylesheet" href="http://f.fontdeck.com/s/css/zH28mslJNSfrEtk/N8vkA5GMvEQ/citydigits.org/35051.css" type="text/css" />
     <script src="js/d3.v3.min.js"></script>
 </head>
 
@@ -157,8 +157,8 @@ var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
     function mMove(){
 
        var m = d3.mouse(this);
-      d3.select("#path").select("title").text(m[1]);
-      console.log(m[1]);
+      var position = d3.select("#path").select("title").text(m[1]);
+      console.log(position);
     }
 
     function processAndRender (response) {
