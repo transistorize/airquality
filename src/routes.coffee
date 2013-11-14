@@ -142,7 +142,7 @@ class Routes
 
             @storage.bulkCSVImport request.body.platform_uid, files, (err, result) -> 
                 console.log 'return from import: ', result
-                if !err
+                if !err && !result
                     response.redirect('eggsitting/p/' + request.body.platform_uid)
                 else
                     response.status(500).send status: 'rejected', error: 'transformation failed'

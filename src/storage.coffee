@@ -95,7 +95,7 @@ class Storage
             console.error 'translate: ', translationError
             return cb translationError
 
-        query 'update dim.platform set ' + sql.update + ' where uid = $1::uuid;', [sql.uuid].concat(sql.values), (err, result) ->
+        query 'update dim.platform set ' + sql.update + ', lastupdate=now() where uid = $1::uuid;', [sql.uuid].concat(sql.values), (err, result) ->
             console.log 'finished platform update', result?.rowCount
             if !result || result.rowCount isnt 1
                 cb 'Did not update valid platform, stated change request = ' + cr
