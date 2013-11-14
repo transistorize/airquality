@@ -54,7 +54,7 @@
                 <br>
                 Name: <input type="text" name="name" id="name"/><br>
                 Group: <input type="text" name="group" id="group"/><br>
-                Notes: <input type="text" name="description" id="description" /><br><br>
+                Notes: <input type="text" name="description" id="notes" /><br><br>
                 </div>
                 <div id="platforms" class="right">
                     Search listed eggs: <input class="search" />
@@ -130,9 +130,9 @@
         function selectPlatform(platform, index) {
             d3.selectAll('li.chosen').classed('chosen', false);
             d3.select(this).classed('chosen', true);
-            d3.select('#platform_uid').property('value', platform.uid);
-            d3.select('#name').property('value', platform.name);
-            d3.select('#description').property('value', platform.description);
+            d3.select('input#platform_uid').property('value', platform.uid);
+            d3.select('input#name').property('value', platform.name);
+            d3.select('input#notes').property('value', platform.description);
             if (platform.lat && platform.lng) {
                 updateMarker(new L.LatLng(platform.lat, platform.lng));
             } else {
@@ -144,9 +144,9 @@
         function clearSelections() {
             d3.select('#platforms').style('display', 'none');
             d3.selectAll('li.chosen').classed('chosen', false);
-            d3.select('#platform_uid').property('value', null);
-            d3.select('#name').property('value', null); 
-            d3.select('#description').property('value', null);          
+            d3.select('input#platform_uid').property('value', null);
+            d3.select('input#name').property('value', null); 
+            d3.select('input#notes').property('value', null);          
             updateSubmitBtnState();
         }
 
@@ -168,7 +168,6 @@
 
         function submit(input) {
             console.log(d3.select("#datafiles"));
-            //d3.xhr('/upload/test')
         }
 
         function updateMarker(latlng) {

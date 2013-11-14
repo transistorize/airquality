@@ -186,7 +186,7 @@ class Storage
             if k.match(/meta./)
                 field = k.split('.')[1]
                 sql.values[i] = sql.values[i].toString()
-                "meta = meta::hstore || hstore('" + field + "', $" + (i + 2) + ')'
+                "meta = coalesce(meta::hstore, hstore('" + field + "', null)) || hstore('" + field + "', $" + (i + 2) + ')'
              else    
                 k + ' = $' + (i + 2)
         sql.update = sql.update.join(', ')
@@ -291,7 +291,12 @@ class Storage
             wstream = client.copyFrom 'copy ' + table + ' (' + copySchema.join(',') + ') from stdin with csv;'
                         
             wstream.on 'pipe', (src) -> console.log 'write pipe called\tuid=' + uid
-            wstream.on 'close', () -> console.log 'write stream closed called\tuid=' + uid
+
+            wstream.on 'close', () -> 
+                console.log 'write stream closed called\tuid=' + uid
+                if !errorRecv && !callbackCalled
+                    callbackCalled = true
+                    cb null, file
             
             wstream.on 'error', (error) -> 
                 errorRecv = error
@@ -316,10 +321,7 @@ class Storage
             rstream.on 'close', () -> 
                 console.log 'read stream closed for', file.path, '\tuid=' + uid
                 wstream.end()
-                if !errorRecv && !callbackCalled
-                    callbackCalled = true
-                    cb null, file
-
+                
             #rstream.on 'data', (chunk) -> console.log 'rstream chunk length=', chunk.length
             rstream.pipe wstream, {end: true} # end write stream when read stream ends
         

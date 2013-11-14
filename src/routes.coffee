@@ -121,6 +121,7 @@ class Routes
             @storage.updatePlatform cr, (err, result) =>
                 if !err
                     try
+                        console.log 'finished update of platform', result
                         @importData request, response, done
                     catch e
                         console.error 'importData threw exception - calling done', e
@@ -142,7 +143,7 @@ class Routes
 
             @storage.bulkCSVImport request.body.platform_uid, files, (err, result) -> 
                 console.log 'return from import: ', result
-                if !err && !result
+                if !err && result
                     response.redirect('eggsitting/p/' + request.body.platform_uid)
                 else
                     response.status(500).send status: 'rejected', error: 'transformation failed'
