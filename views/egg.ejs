@@ -31,11 +31,11 @@
     <aside id="totals"><span id="active">-</span> of <span id="total">-</span> readings selected.</aside>
 
 <div id="charts">
-   <h4>Dates, Temperature & Humidity</h4>
-  <div id="time-chart" class="chart">
+   <h4>Temperature & Humidity</h4>
+<!--  <div id="time-chart" class="chart">
     <div class="title">Dates</div> <br>
   </div>
-  <div id="temp-chart" class="chart">
+ -->  <div id="temp-chart" class="chart">
     <div class="title">Temperature, Average: <span id="tempavg"></span>°F </div> <br>
   </div>
   <div id="humidity-chart" class="chart">
@@ -116,6 +116,8 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
       humidity = reading.dimension(function(d) { return d.humidity; }),
       humidgroup = humidity.group().reduceCount();
  
+console.log(dates);
+
  //means
   var allCO = egg.map(function(d){
     return d.CO;
@@ -146,10 +148,10 @@ d3.json("/eggsitting/eggs/uid/" + uid + "/data", function (error, readings){
 //charts
   var charts = [
 
-    barChart()
-        .dimension(date)
-        .group(dates)
-      .x(d3.time.scale()),
+    //barChart()
+     //   .dimension(date)
+     //   .group(dates)
+    //  .x(d3.time.scale()),
 
     barChart()
         .dimension(temperature)
