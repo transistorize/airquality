@@ -187,9 +187,23 @@ class Storage
                 field = k.split('.')[1]
                 sql.values[i] = sql.values[i].toString()
                 "meta = coalesce(meta::hstore, hstore('" + field + "', null)) || hstore('" + field + "', $" + (i + 2) + ')'
-             else    
+            else    
                 k + ' = $' + (i + 2)
-        sql.update = sql.update.join(', ')
+
+        deleteItems = cr.getDeletes()
+        delKeys = _.keys(deleteItems)
+        sql.keys.concat(delKeys)
+        delValues = _.values(deleteItems)
+        sql.values.concat(delValues)
+
+        deletes = delKeys.map (k, i) ->
+            if k.match(/meta./)
+                field = k.split('.')[1]
+                "meta = meta::hstore - '" + field + "'::text"
+            else
+                k + ' = NULL'
+
+        sql.update = sql.update.concat(deletes).join(', ')
         console.log sql
         return sql
 

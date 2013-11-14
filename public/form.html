@@ -133,6 +133,14 @@
             d3.select('input#platform_uid').property('value', platform.uid);
             d3.select('input#name').property('value', platform.name);
             d3.select('input#notes').property('value', platform.description);
+
+            var groupResult = (platform.meta || '').match(/"group"=>"([\w\s]*)"/);
+            if (groupResult) {
+                d3.select('input#group').property('value', groupResult[1]);
+            } else {
+                d3.select('input#group').property('value', null);
+            }
+
             if (platform.lat && platform.lng) {
                 updateMarker(new L.LatLng(platform.lat, platform.lng));
             } else {
@@ -144,9 +152,7 @@
         function clearSelections() {
             d3.select('#platforms').style('display', 'none');
             d3.selectAll('li.chosen').classed('chosen', false);
-            d3.select('input#platform_uid').property('value', null);
-            d3.select('input#name').property('value', null); 
-            d3.select('input#notes').property('value', null);          
+            d3.selectAll('#platform_uid,#group,#name,#notes').property('value', null);        
             updateSubmitBtnState();
         }
 

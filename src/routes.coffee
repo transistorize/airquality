@@ -101,11 +101,12 @@ class Routes
 
         if request.body?.platform_uid
             b = request.body
-            cr = new ChangeRequest(b.platform_uid)           
-            cr.changeAttr('meta.group', b.group) if b.group
-            cr.changeAttr('name', b.name) if b.name
-            cr.changeAttr('description', b.description) if b.description
-            cr.addToSeq('images', b.picture) if b.picture
+            cr = new ChangeRequest(b.platform_uid)     
+
+            if b.name then cr.changeAttr('name', b.name) # not allowed to set to null
+            if b.group then cr.changeAttr('meta.group', b.group) else cr.deleteAttr('meta.group')
+            if b.description then cr.changeAttr('description', b.description) else cr.deleteAttr('description')
+            if b.image then cr.addToSeq('images', b.picture) #deletes not supported
             
             console.log 'parsing location=', b.platform_loc
             try 
