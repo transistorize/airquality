@@ -10,7 +10,7 @@ _ = require "underscore"
 class ChangeRequest
         
     constructor: (@uuid)  ->
-        @changes = { __attr: {}, __del: {}, __seq:{}, __seq_schema:{} }
+        @changes = { __attr: {}, __del: {}, __seq:{} }
     
     hasAttr: (attribute) ->
         return _.has(@changes['__attr'], attribute)
@@ -30,11 +30,6 @@ class ChangeRequest
     hasSeq: (attribute) ->
         return _.has(@changes['__seq'], attribute)
 
-    createSeq: (attribute, schema) ->
-        throw new Error 'empty schema' if !schema
-        checkNameOf attribute
-        @changes['__seq_schema'][attribute] = schema
-
     addToSeq: (attribute, value) ->
         checkNameOf attribute
         @changes['__seq'] = @changes['__seq'] || {}
@@ -49,18 +44,13 @@ class ChangeRequest
         #shallow copy only
         return _.clone(@changes['__attr'])
 
-    getDeletions: () ->
+    getDeletes: () ->
         #shallow copy only
         return _.clone(@changes['__del'])
 
     getSequences: () ->
         #shallow copy only
         return _.clone(@changes['__seq'])
-
-    getSchemas: () ->
-        #shallow copy only
-        return _.cone(@changes['__seq_schema'])
-
 
     checkNameOf = (attribute) ->
         throw new Error 'undefined attribute name not allowed' if !attribute

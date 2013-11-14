@@ -19,7 +19,7 @@ class Storage
     # names are not guaranteed unique, so several uids may match
     getUidsForName: (name, cb) ->
         throw new Error 'invalid arguments' if !cb or !name
-        query 'select uid from dim.platform where name = $1::varchar', [name], (err, result) ->
+        query 'select uid from dim.platform where name = $1::varchar;', [name], (err, result) ->
             if !err
                 uids = result.rows?.map( (x) -> x.uid )
                 cb null, uids
@@ -45,7 +45,7 @@ class Storage
         getmac.getMac (err, macAddress) =>
             return cb err if err or !macAddress
             params = [body.name, macAddress + process.pid]
-            query 'select * from create_platform($1::varchar, $2::varchar)', params, (err, result) ->
+            query 'select * from create_platform($1::varchar, $2::varchar);', params, (err, result) ->
                 if !err
                     platform = result.rows?[0]
                     cb null, platform
@@ -57,7 +57,7 @@ class Storage
     getPlatforms: (page, count, cb) ->
         throw new Error 'invalid arguments' if !cb or count <= 0 or page < 0
         count = 100 if count > 100
-        query 'select * from dim.platform where current = 1::bit(2) limit $1::int offset $2::int', [count, page * count], (err, result) ->
+        query 'select * from dim.platform where current = 1::bit(2) limit $1::int offset $2::int;', [count, page * count], (err, result) ->
             if !err
                 cb null, result.rows || []
             else
@@ -67,7 +67,7 @@ class Storage
     # otherwise returns the empty array
     getPlatformByUid: (uid, cb) ->
         throw new Error 'invalid arguments' if !cb or !uid
-        query 'select * from dim.platform where uid = $1::uuid and current = 01::bit(2) limit 1', [uid], (err, result) ->
+        query 'select * from dim.platform where uid = $1::uuid and current = 01::bit(2) limit 1;', [uid], (err, result) ->
             if !err
                 cb null, result.rows || []
             else
@@ -77,7 +77,7 @@ class Storage
     # otherwise returns the empty array
     getPlatformById: (id, cb) ->
         throw new Error 'invalid arguments' if !cb or !id
-        query 'select * from dim.platform where id = $1::int and current = 1::bit(2) limit 1', [id], (err, result) ->
+        query 'select * from dim.platform where id = $1::int and current = 1::bit(2) limit 1;', [id], (err, result) ->
             if !err
                 cb null, result.rows or []
             else
@@ -87,17 +87,20 @@ class Storage
     updatePlatform: (cr, cb) ->
         throw new Error 'invalid arguments' if !cb or !cr
         
-        #temp
-        return cb null, 'not supported'
+        sql = null
+        
+        try
+            sql = @translateToSql cr
+        catch translationError
+            console.error 'translate: ', translationError
+            return cb translationError
 
-        changeitems = cr.getChanges()
-        return cb null, 'empty changes' if _.isEmpty(changeItems)
-
-        # translate major columns 
-        #changeitems
-        # translate metal columns
-        # translate deletions
-        #query 'update dim.platform set where uid = $1'
+        query 'update dim.platform set ' + sql.update + ' where uid = $1::uuid;', [sql.uuid].concat(sql.values), (err, result) ->
+            console.log 'finished platform update', result?.rowCount
+            if !result || result.rowCount isnt 1
+                cb 'Did not update valid platform, stated change request = ' + cr
+            else
+                cb null, {status: 'ok', uid: cr.uuid}             
 
 
     ## TODO cache uid -> data table mapping
@@ -107,17 +110,18 @@ class Storage
         throw new Error 'invalid arguments' if !cb or !uid
         page = page or 0
         count = 5000
-        query 'select id from dim.platform where uid = $1::uuid limit 1', [uid], (err, result) =>
+        query 'select id from dim.platform where uid = $1::uuid limit 1;', [uid], (err, result) =>
             if err or !result or !result.rows[0]?.id
                 return  cb 'error finding platform data table for uid=' + uid
-            query 'select * from fact.sensor_data where platform_id = $1::int limit $2::int offset $3::int',
+
+            query 'select * from fact.sensor_data where platform_id = $1::int limit $2::int offset $3::int;',
                 [result.rows[0]?.id, count, count * page], (err, result) ->
                     if !err
                         cb null, result.rows or []
                     else
                         cb 'error querying for platform data by uid=' + uid
    
-    # one-off table wide query - this is dangerous, but expedient
+    # one-off table wide query - this is time-consuming in a non-relational world, but expedient now
     getDataByColumn: (cols, cb) ->
         throw new Error 'invalid arguments' if !cb or !cols
         
@@ -136,7 +140,14 @@ class Storage
                     cb null, aggregateByPlatform(result.rows || [])
                 else
                     cb 'error querying for platform by data column=' + cols
-                
+    
+    deleteByUid: (uid, cb) ->
+        query 'delete from dim.platform where uid = $1::uuid;', [uid], (err, result) =>
+            if !err
+                cb null, [{ 'uid': uid }]
+            else
+                cb 'error deleting platform for uid=' + uid + ', perhaps does not exist'
+
 
     # shuts down all storage related resources
     # calling this should only be done by the main script
@@ -156,10 +167,37 @@ class Storage
         # imports the data into the temp extraction table, based on the template table
         copyFrom uid, fileList, 'extract.sensor_data', schema, cb                    
  
+
+    translateToSql: (cr) ->
+        # translate major columns 
+        # changeitems
+        # translate meta columns
+        # translate deletions
+        console.log 'entered translate'
+        changeitems = cr.getChanges()
+
+        console.log 'changes', changeitems
+        console.log 'deletes', cr.getDeletes()
+        sql = {uuid: cr.uuid}
+        sql.keys = _.keys(changeitems)
+        sql.changeCount = sql.keys.length
+        sql.values = _.values(changeitems)
+        sql.update = sql.keys.map (k, i) -> 
+            if k.match(/meta./)
+                field = k.split('.')[1]
+                sql.values[i] = sql.values[i].toString()
+                "meta = meta::hstore || hstore('" + field + "', $" + (i + 2) + ')'
+             else    
+                k + ' = $' + (i + 2)
+        sql.update = sql.update.join(', ')
+        console.log sql
+        return sql
+
     #
     # private
     #
-    
+  
+
     #reaggregate each row into a list of platforms and their respective values
     aggregateByPlatform = (rows) ->
         return rows if rows.length is 0       
@@ -183,10 +221,11 @@ class Storage
             parameters = undefined
         
         throw new Error 'callback required' if !cb
+
         console.log 'query:', statement, ', ', parameters?.length, ' parameter(s)'
         pg.connect config.Postgres.connection, (err, client, done) =>
-            try 
-                if !err
+            if !err
+                try 
                     client.query statement, parameters, (err, result) ->
                         done()
                         try
@@ -194,13 +233,14 @@ class Storage
                             cb err, result
                         catch exp
                             console.error exp
-                else
-                    console.error 'error with query', err
-                    done()
-                    cb err
-            catch connExp
-                done()
-            
+                catch queryExp
+                    console.error queryExp
+                    done(queryExp)
+            else
+                console.error 'error with query', err
+                done(err)
+                cb err
+                        
 
     # private method: wrapper method for beginning and ending a transaction
     withTransaction = (innerExecution, postHook) ->
@@ -250,38 +290,38 @@ class Storage
             # open the sink stream
             wstream = client.copyFrom 'copy ' + table + ' (' + copySchema.join(',') + ') from stdin with csv;'
                         
-            wstream.on 'pipe', (src) ->
-                console.log 'piping into the writer'
+            wstream.on 'pipe', (src) -> console.log 'write pipe called\tuid=' + uid
+            wstream.on 'close', () -> console.log 'write stream closed called\tuid=' + uid
             
             wstream.on 'error', (error) -> 
                 errorRecv = error
-                console.error 'error from write stream:', errorRecv, 'uid=' + uid
+                console.error 'error from write stream:', errorRecv, '\tuid=' + uid
                 if !callbackCalled
                     callbackCalled = true
-                    console.error 'calling wstream error callback', 'uid=' + uid
+                    console.error 'calling wstream error callback\tuid=' + uid
                     cb error
            
             # open the source stream
-            rstream = fs.createReadStream file.path, {autoClose: true}
+            rstream = fs.createReadStream file.path, {autoClose: true, encoding: 'utf8'}
                         
             rstream.on 'error', (error) -> 
                 errorRecv = error
-                console.error 'error from read stream:', error, 'uid=' + uid
+                console.error 'error from read stream:', error, '\tuid=' + uid
                 if !callbackCalled
                     callbackCalled = true
                     wstream.end()
-                    console.error 'calling rstream error callback', 'uid=' + uid
+                    console.error 'calling rstream error callback\tuid=' + uid
                     cb error
             
             rstream.on 'close', () -> 
-                console.log 'read stream closed for', file.path, 'uid=' + uid
+                console.log 'read stream closed for', file.path, '\tuid=' + uid
                 wstream.end()
                 if !errorRecv && !callbackCalled
                     callbackCalled = true
                     cb null, file
 
             #rstream.on 'data', (chunk) -> console.log 'rstream chunk length=', chunk.length
-            rstream.pipe wstream, {end: false} # end write stream when read stream ends
+            rstream.pipe wstream, {end: true} # end write stream when read stream ends
         
 
         # copy several files, one by one, into the db

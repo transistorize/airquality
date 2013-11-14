@@ -93,7 +93,7 @@ tableScript = """
     -- temporary table to support project
     drop table if exists fact.sensor_data cascade;
     create table fact.sensor_data (
-        platform_id integer references dim.platform(id),
+        platform_id integer references dim.platform(id) on delete cascade,
         ts timestamp with time zone not null,
         temp_degc numeric,
         humidity numeric,
